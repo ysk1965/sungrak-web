@@ -197,7 +197,7 @@ export default function VariantIPage() {
                 신실한 헌신,
                 <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-amber-600">
-                  긍휼한 아낌
+                  긍휼한 사귐
                 </span>
               </motion.h1>
 

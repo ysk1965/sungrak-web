@@ -29,7 +29,6 @@ const makeFadeInUp = (
 export default function VariantKSermonsPage() {
   const rm = useReducedMotion();
   const latestSermon = initialSermons[0];
-  const otherSermons = initialSermons.slice(1);
 
   return (
     <>
@@ -50,7 +49,7 @@ export default function VariantKSermonsPage() {
           <div className="absolute inset-0 bg-black/50" />
         </div>
 
-        <Container size="lg" className="relative z-10 flex items-center min-h-[calc(50vh-5rem)]">
+        <Container size="lg" className="relative z-10 flex items-center min-h-[50vh]">
           <motion.div
             initial={rm ? false : { opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -94,20 +93,26 @@ export default function VariantKSermonsPage() {
             whileInView="visible"
             viewport={{ once: true }}
           >
-            <div className="group relative aspect-video rounded-2xl overflow-hidden bg-neutral-100 mb-6">
+            <a
+              href={`https://www.youtube.com/watch?v=${latestSermon.youtubeId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group/play relative block aspect-video rounded-2xl overflow-hidden bg-neutral-100 mb-6"
+              aria-label={`설교 영상 재생: ${latestSermon.title}`}
+            >
               <Image
                 src={latestSermon.thumbnailUrl}
                 alt={latestSermon.title}
                 fill
                 className="object-cover"
               />
-              <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors" />
+              <div className="absolute inset-0 bg-black/30 group-hover/play:bg-black/20 transition-colors" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-24 h-24 rounded-full bg-white/90 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg cursor-pointer">
+                <div className="w-24 h-24 rounded-full bg-white/90 flex items-center justify-center group-hover/play:scale-110 transition-transform shadow-lg">
                   <Play size={40} className="text-neutral-900 ml-1" aria-hidden="true" />
                 </div>
               </div>
-            </div>
+            </a>
             <div>
               <span className="inline-block px-3 py-1 rounded-full bg-neutral-100 text-neutral-600 text-xs font-medium mb-3">
                 최신 설교
@@ -186,7 +191,12 @@ export default function VariantKSermonsPage() {
             viewport={{ once: true }}
             className="text-center mt-12"
           >
-            <a href="#" className="inline-flex items-center gap-2 text-neutral-400 hover:text-neutral-900 transition-colors">
+            <a
+              href="https://www.youtube.com/@sungrak"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-neutral-400 hover:text-neutral-900 transition-colors"
+            >
               <Youtube size={20} aria-hidden="true" />
               <span className="font-medium">YouTube에서 더보기</span>
               <ArrowRight size={16} aria-hidden="true" />

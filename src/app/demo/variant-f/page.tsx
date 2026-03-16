@@ -167,7 +167,7 @@ export default function VariantFPage() {
             >
               신실한 헌신,{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-amber-300">
-                긍휼한 아낌
+                긍휼한 사귐
               </span>
             </motion.h1>
 
@@ -181,7 +181,7 @@ export default function VariantFPage() {
               transition={shouldReduceMotion ? { duration: 0 } : { delay: 0.5 }}
               className="text-white/70 text-lg"
             >
-              Faith, a Relationship with the Lord
+              Sincere Devotion, Compassionate Fellowship
             </motion.p>
           </motion.div>
         </Container>
@@ -585,7 +585,7 @@ export default function VariantFPage() {
               </span>
             </h2>
             <p className="text-neutral-600 leading-relaxed mb-4">
-              성락교회는 &quot;신실한 헌신, 긍휼한 아낌&quot;이라는 비전 아래,
+              성락교회는 &quot;신실한 헌신, 긍휼한 사귐&quot;이라는 비전 아래,
               하나님과 이웃을 섬기는 공동체입니다.
             </p>
             <p className="text-neutral-600 leading-relaxed mb-8">

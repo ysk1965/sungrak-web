@@ -83,7 +83,7 @@ export default function VariantBAboutPage() {
               교회소개
             </h1>
             <p className="text-lg text-white/70 max-w-xl">
-              신실한 헌신과 긍휼한 아낌으로 하나님과 이웃을 섬기는 공동체
+              신실한 헌신과 긍휼한 사귐으로 하나님과 이웃을 섬기는 공동체
             </p>
           </motion.div>
         </Container>
@@ -250,7 +250,7 @@ export default function VariantBAboutPage() {
             },
             {
               icon: HeartHandshake,
-              title: "긍휼한 아낌",
+              title: "긍휼한 사귐",
               subtitle: "Compassionate Fellowship",
               verse: "골로새서 3:12",
               description:

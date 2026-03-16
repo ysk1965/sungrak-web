@@ -46,7 +46,7 @@ const heroSlides = [
   {
     image:
       "https://images.unsplash.com/photo-1519834785169-98be25ec3f84?q=80&w=1964",
-    title: "긍휼한 아낌",
+    title: "긍휼한 사귐",
     subtitle: "Compassionate Fellowship",
     description: "서로를 사랑으로 섬기는 공동체입니다",
     accent: "from-rose-500 to-pink-400",
@@ -631,10 +631,10 @@ export default function VariantBPage() {
               OUR VISION
             </motion.p>
             <h2 className="text-4xl md:text-6xl font-bold mb-8 leading-tight">
-              Faith, a Relationship
+              Sincere Devotion,
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-amber-300">
-                with the Lord
+                Compassionate Fellowship
               </span>
             </h2>
             <p className="text-lg text-white/70 leading-relaxed mb-10 max-w-2xl mx-auto">
@@ -642,7 +642,7 @@ export default function VariantBPage() {
               사랑하고, 이웃을 사랑하며, 세상을 섬기는 공동체입니다.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              {["신실한 헌신", "긍휼한 아낌", "함께 성장"].map((text, i) => (
+              {["신실한 헌신", "긍휼한 사귐", "함께 성장"].map((text, i) => (
                 <motion.div
                   key={text}
                   initial={

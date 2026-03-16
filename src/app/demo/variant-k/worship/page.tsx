@@ -54,7 +54,7 @@ export default function VariantKWorshipPage() {
       >
         <div className="absolute inset-0" aria-hidden="true">
           <Image
-            src="https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=2073"
+            src="https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=2070"
             alt=""
             fill
             priority
@@ -63,7 +63,7 @@ export default function VariantKWorshipPage() {
           <div className="absolute inset-0 bg-black/50" />
         </div>
 
-        <Container size="lg" className="relative z-10 flex items-center min-h-[calc(50vh-5rem)]">
+        <Container size="lg" className="relative z-10 flex items-center min-h-[50vh]">
           <motion.div
             initial={rm ? false : { opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}

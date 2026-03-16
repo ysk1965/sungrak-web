@@ -105,7 +105,7 @@ export default function AboutPage() {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3">
               교회소개
             </h1>
-            <p className="text-neutral-200 text-lg">신실한 헌신, 긍휼한 아낌</p>
+            <p className="text-neutral-200 text-lg">신실한 헌신, 긍휼한 사귐</p>
           </motion.div>
         </div>
 

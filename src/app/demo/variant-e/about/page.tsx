@@ -106,7 +106,7 @@ export default function AboutPage() {
             교회소개
           </h1>
           <p className="text-xl text-white/70 font-light tracking-wide">
-            신실한 헌신, 긍휼한 아낌
+            신실한 헌신, 긍휼한 사귐
           </p>
         </motion.div>
 
@@ -267,10 +267,10 @@ export default function AboutPage() {
               aria-hidden="true"
             />
             <p className="text-2xl md:text-3xl font-bold leading-tight">
-              Faith, a Relationship
+              Sincere Devotion,
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-300 to-amber-200">
-                with the Lord
+                Compassionate Fellowship
               </span>
             </p>
           </motion.div>

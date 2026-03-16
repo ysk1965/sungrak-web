@@ -198,7 +198,7 @@ export default function VariantJPage() {
               className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-[1.05]"
             >
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500">
-                21세기 다윗의 행렬
+                신실한 헌신,{"\n"}긍휼한 사귐
               </span>
             </motion.h1>
 
@@ -213,7 +213,7 @@ export default function VariantJPage() {
               }
               className="text-stone-400 text-lg md:text-xl font-light tracking-wide mb-12 max-w-2xl mx-auto"
             >
-              신실한 헌신, 긍휼한 아낌 — Sincere Devotion, Compassionate
+              신실한 헌신, 긍휼한 사귐 — Sincere Devotion, Compassionate
               Fellowship
             </motion.p>
 
@@ -245,7 +245,7 @@ export default function VariantJPage() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="min-h-[44px] min-w-[180px] h-14 text-base border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50 group"
+                  className="min-h-[44px] min-w-[180px] h-14 text-base border-2 border-white/30 bg-transparent text-white hover:bg-white/10 hover:border-white/50 group"
                 >
                   교회 소개
                   <ArrowRight

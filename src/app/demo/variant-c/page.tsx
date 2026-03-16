@@ -183,7 +183,7 @@ export default function VariantCPage() {
                 신실한 헌신,
                 <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-amber-500">
-                  긍휼한 아낌
+                  긍휼한 사귐
                 </span>
               </h1>
 

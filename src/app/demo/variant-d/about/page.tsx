@@ -155,7 +155,7 @@ export default function VariantDAboutPage() {
               transition={shouldReduceMotion ? { duration: 0 } : { delay: 0.5 }}
               className="text-lg text-white/70 leading-relaxed max-w-xl"
             >
-              신실한 헌신과 긍휼한 아낌으로 하나님과 이웃을 섬기는 공동체,
+              신실한 헌신과 긍휼한 사귐으로 하나님과 이웃을 섬기는 공동체,
               성락교회를 소개합니다.
             </motion.p>
           </motion.div>

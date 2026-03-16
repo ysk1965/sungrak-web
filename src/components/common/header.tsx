@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
@@ -24,9 +24,18 @@ interface HeaderProps {
 
 export function Header({ variant = "default", basePath: basePathProp }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const contextBasePath = useBasePath();
   const basePath = basePathProp ?? contextBasePath ?? "";
+
+  useEffect(() => {
+    if (variant !== "transparent") return;
+    const onScroll = () => setScrolled(window.scrollY > 50);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [variant]);
 
   return (
     <>
@@ -34,7 +43,9 @@ export function Header({ variant = "default", basePath: basePathProp }: HeaderPr
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
           variant === "transparent"
-            ? "bg-transparent"
+            ? scrolled
+              ? "bg-stone-950/95 backdrop-blur-md shadow-lg shadow-black/10"
+              : "bg-gradient-to-b from-black/60 to-transparent"
             : "bg-white/95 backdrop-blur-md shadow-sm",
         )}
       >

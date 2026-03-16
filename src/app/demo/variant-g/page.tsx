@@ -348,7 +348,7 @@ export default function VariantGPage() {
             className="text-2xl md:text-3xl lg:text-4xl font-medium mb-4"
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-amber-300">
-              신실한 헌신, 긍휼한 아낌
+              신실한 헌신, 긍휼한 사귐
             </span>
           </motion.p>
 
@@ -359,7 +359,7 @@ export default function VariantGPage() {
             )}
             className="text-white/60 text-lg md:text-xl mb-10"
           >
-            Faith, a Relationship with the Lord
+            Sincere Devotion, Compassionate Fellowship
           </motion.p>
 
           <motion.div
@@ -382,7 +382,7 @@ export default function VariantGPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 h-14 px-8 text-base"
+                className="border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white h-14 px-8 text-base"
               >
                 교회 소개
               </Button>

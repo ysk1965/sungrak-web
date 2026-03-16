@@ -2,13 +2,11 @@
 
 import { useState } from "react";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
-import { ArrowRight, Pin, Calendar, Eye, Tag } from "lucide-react";
+import { ArrowRight, Pin, Calendar, Eye } from "lucide-react";
 import Image from "next/image";
 import { Container } from "@/components/common";
-import { Button } from "@/components/ui/button";
 import { initialNotices } from "@/mocks/data/initial";
 import { formatDate } from "@/lib/utils";
-import type { NoticeCategory } from "@/types";
 
 const makeFadeInUp = (
   yOffset: number,
@@ -50,7 +48,7 @@ export default function VariantKNewsPage() {
       >
         <div className="absolute inset-0" aria-hidden="true">
           <Image
-            src="https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=2070"
+            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2070"
             alt=""
             fill
             priority
@@ -59,7 +57,7 @@ export default function VariantKNewsPage() {
           <div className="absolute inset-0 bg-black/50" />
         </div>
 
-        <Container size="lg" className="relative z-10 flex items-center min-h-[calc(50vh-5rem)]">
+        <Container size="lg" className="relative z-10 flex items-center min-h-[50vh]">
           <motion.div
             initial={rm ? false : { opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}

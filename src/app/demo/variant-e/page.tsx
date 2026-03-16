@@ -110,7 +110,7 @@ export default function VariantEPage() {
                 <br />
                 {/* bg-[length:200%_auto] is set so animate-gradient can shift background-position */}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 via-amber-500 to-primary-500 bg-[length:200%_auto] animate-gradient">
-                  긍휼한 아낌
+                  긍휼한 사귐
                 </span>
               </motion.h1>
 
@@ -241,10 +241,10 @@ export default function VariantEPage() {
               Our Vision
             </p>
             <h2 className="text-3xl md:text-5xl font-bold leading-tight">
-              Faith, a Relationship
+              Sincere Devotion,
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-300 to-amber-200">
-                with the Lord
+                Compassionate Fellowship
               </span>
             </h2>
           </motion.div>

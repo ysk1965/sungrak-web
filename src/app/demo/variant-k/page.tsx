@@ -2,13 +2,11 @@
 
 import {
   motion,
-  useScroll,
-  useTransform,
   useReducedMotion,
   AnimatePresence,
   type Variants,
 } from "framer-motion";
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   ArrowRight,
   ArrowDown,
@@ -30,7 +28,6 @@ import {
   initialSermons,
   initialNotices,
   initialChurchInfo,
-  initialWorships,
 } from "@/mocks/data/initial";
 import { useBasePath } from "@/contexts/base-path-context";
 import { formatDate } from "@/lib/utils";
@@ -61,7 +58,7 @@ const heroSlides = [
   {
     image:
       "https://images.unsplash.com/photo-1519834785169-98be25ec3f84?q=80&w=2070",
-    title: "21세기 다윗의 행렬",
+    title: "신실한 헌신, 긍휼한 사귐",
     subtitle: "Sincere Devotion, Compassionate Fellowship",
   },
   {
@@ -121,22 +118,44 @@ export default function VariantKPage() {
   const fadeUp = (delay = 0) =>
     makeFadeInUp(30, delay, 0.7, shouldReduceMotion);
 
-  /* Auto-play slider */
+  /* Auto-play slider with reset on interaction */
+  const autoplayRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const resetAutoplay = useCallback(() => {
+    if (autoplayRef.current) clearInterval(autoplayRef.current);
+    if (!shouldReduceMotion) {
+      autoplayRef.current = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+      }, 5000);
+    }
+  }, [shouldReduceMotion]);
+
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-  }, []);
+    resetAutoplay();
+  }, [resetAutoplay]);
 
   const prevSlide = useCallback(() => {
     setCurrentSlide(
       (prev) => (prev - 1 + heroSlides.length) % heroSlides.length,
     );
-  }, []);
+    resetAutoplay();
+  }, [resetAutoplay]);
+
+  const goToSlide = useCallback(
+    (i: number) => {
+      setCurrentSlide(i);
+      resetAutoplay();
+    },
+    [resetAutoplay],
+  );
 
   useEffect(() => {
-    if (shouldReduceMotion) return;
-    const timer = setInterval(nextSlide, 5000);
-    return () => clearInterval(timer);
-  }, [shouldReduceMotion, nextSlide]);
+    resetAutoplay();
+    return () => {
+      if (autoplayRef.current) clearInterval(autoplayRef.current);
+    };
+  }, [resetAutoplay]);
 
   return (
     <>
@@ -145,29 +164,31 @@ export default function VariantKPage() {
       {/* ============================================================ */}
       <section
         id="variant-k-content"
-        className="relative h-screen overflow-hidden"
+        className="relative h-[calc(100vh-5rem)] mt-16 md:mt-20 overflow-hidden"
         aria-label="메인 히어로 슬라이더"
       >
-        {/* Slides */}
-        <AnimatePresence mode="wait">
+        {/* Slides -- crossfade (all layers mounted, opacity toggled) */}
+        {heroSlides.map((slide, i) => (
           <motion.div
-            key={currentSlide}
-            initial={shouldReduceMotion ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={shouldReduceMotion ? undefined : { opacity: 0 }}
-            transition={{ duration: 0.8 }}
+            key={i}
+            initial={false}
+            animate={{ opacity: i === currentSlide ? 1 : 0 }}
+            transition={
+              shouldReduceMotion ? { duration: 0 } : { duration: 0.8 }
+            }
             className="absolute inset-0"
+            aria-hidden={i !== currentSlide}
           >
             <Image
-              src={heroSlides[currentSlide].image}
+              src={slide.image}
               alt=""
               fill
-              priority
+              priority={i === 0}
               className="object-cover"
             />
             <div className="absolute inset-0 bg-black/40" />
           </motion.div>
-        </AnimatePresence>
+        ))}
 
         {/* Hero content */}
         <div className="relative z-10 h-full flex items-center justify-center">
@@ -217,7 +238,7 @@ export default function VariantKPage() {
           {heroSlides.map((_, i) => (
             <button
               key={i}
-              onClick={() => setCurrentSlide(i)}
+              onClick={() => goToSlide(i)}
               className={`w-3 h-3 rounded-full transition-all duration-300 ${
                 i === currentSlide
                   ? "bg-white scale-110"
@@ -413,7 +434,10 @@ export default function VariantKPage() {
                 whileInView="visible"
                 viewport={{ once: true }}
               >
-                <div className="group flex items-center justify-between py-5 px-4 -mx-4 rounded-lg cursor-pointer hover:bg-neutral-50 transition-colors motion-reduce:transition-none">
+                <Link
+                  href={`${basePath}/news`}
+                  className="group flex items-center justify-between py-5 px-4 -mx-4 rounded-lg hover:bg-neutral-50 transition-colors motion-reduce:transition-none"
+                >
                   <div className="flex-1 min-w-0">
                     <h3 className="text-neutral-800 text-base md:text-lg font-medium truncate group-hover:text-neutral-900 transition-colors motion-reduce:transition-none">
                       {notice.title}
@@ -429,7 +453,7 @@ export default function VariantKPage() {
                       aria-hidden="true"
                     />
                   </div>
-                </div>
+                </Link>
               </motion.div>
             ))}
           </div>

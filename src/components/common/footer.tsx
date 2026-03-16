@@ -22,7 +22,7 @@ export function Footer({ basePath: basePathProp, variant = "default" }: FooterPr
             <div className="lg:col-span-2">
               <h3 className="text-xl font-bold mb-4">성락교회</h3>
               <p className="text-neutral-400 mb-6 leading-relaxed">
-                신실한 헌신, 긍휼한 아낌
+                신실한 헌신, 긍휼한 사귐
                 <br />
                 Sincere Devotion, Compassionate Fellowship
               </p>

@@ -320,7 +320,7 @@ export default function VariantHPage() {
               성락교회 소개
             </h3>
             <p className="text-white/70 text-xs md:text-sm leading-relaxed mb-4 max-w-md">
-              &quot;신실한 헌신, 긍휼한 아낌&quot;의 비전 아래 하나님과 이웃을
+              &quot;신실한 헌신, 긍휼한 사귐&quot;의 비전 아래 하나님과 이웃을
               섬기는 공동체입니다.
             </p>
             <Link href="/about">
@@ -442,7 +442,7 @@ export default function VariantHPage() {
               }
               className="text-white/60 text-base md:text-lg tracking-wide"
             >
-              Faith, a Relationship with the Lord
+              Sincere Devotion, Compassionate Fellowship
             </motion.p>
             <motion.p
               initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
@@ -454,7 +454,7 @@ export default function VariantHPage() {
               }
               className="text-white/40 text-sm mt-2"
             >
-              신실한 헌신, 긍휼한 아낌
+              신실한 헌신, 긍휼한 사귐
             </motion.p>
           </div>
         </Container>

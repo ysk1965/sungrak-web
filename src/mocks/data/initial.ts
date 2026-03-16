@@ -182,7 +182,7 @@ export const initialChurchInfo: ChurchInfo = {
     title: "담임목사 인사말",
     content: `성락교회에 오신 것을 환영합니다.
 
-우리 교회는 "신실한 헌신, 긍휼한 아낌"이라는 비전 아래, 하나님과 이웃을 섬기는 공동체입니다.
+우리 교회는 "신실한 헌신, 긍휼한 사귐"이라는 비전 아래, 하나님과 이웃을 섬기는 공동체입니다.
 
 예수 그리스도의 사랑 안에서 함께 성장하고, 세상을 변화시키는 빛과 소금이 되기를 소망합니다.
 
@@ -192,10 +192,10 @@ export const initialChurchInfo: ChurchInfo = {
     pastorImage: "/images/pastor.jpg",
   },
   vision: {
-    title: "Faith, a Relationship with the Lord",
+    title: "Sincere Devotion, Compassionate Fellowship",
     content:
       "주님과의 관계 안에서 믿음으로 살아가는 교회. 우리는 하나님을 사랑하고, 이웃을 사랑하며, 세상을 섬기는 공동체입니다.",
-    values: ["신실한 헌신 (Sincere Devotion)", "긍휼한 아낌 (Compassionate Fellowship)"],
+    values: ["신실한 헌신 (Sincere Devotion)", "긍휼한 사귐 (Compassionate Fellowship)"],
   },
   history: [
     { year: "1999", content: "성락교회 설립" },

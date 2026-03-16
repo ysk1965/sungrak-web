@@ -63,7 +63,7 @@ export default function VariantDPage() {
       <section
         ref={heroRef}
         className="relative h-[80vh] mt-16 md:mt-20 overflow-hidden"
-        aria-label="성락교회 히어로 배너 - 신실한 헌신, 긍휼한 아낌"
+        aria-label="성락교회 히어로 배너 - 신실한 헌신, 긍휼한 사귐"
       >
         <motion.div
           style={{ scale: imageScale }}
@@ -120,7 +120,7 @@ export default function VariantDPage() {
               신실한 헌신,
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-amber-300">
-                긍휼한 아낌
+                긍휼한 사귐
               </span>
             </motion.h1>
 
@@ -314,7 +314,7 @@ export default function VariantDPage() {
             </figure>
 
             <p className="text-neutral-600 leading-relaxed mb-4">
-              우리 교회는 &quot;신실한 헌신, 긍휼한 아낌&quot;이라는 비전 아래,
+              우리 교회는 &quot;신실한 헌신, 긍휼한 사귐&quot;이라는 비전 아래,
               하나님과 이웃을 섬기는 공동체입니다.
             </p>
             <p className="text-neutral-600 leading-relaxed mb-6">

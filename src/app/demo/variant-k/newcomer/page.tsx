@@ -7,7 +7,6 @@ import {
   Clock,
   MapPin,
   ArrowRight,
-  CheckCircle,
   Phone,
 } from "lucide-react";
 import Link from "next/link";
@@ -15,6 +14,12 @@ import Image from "next/image";
 import { Container } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import { initialChurchInfo, initialWorships } from "@/mocks/data/initial";
+
+const dayLabel: Record<string, string> = {
+  sunday: "주일",
+  monday: "월요일",
+  wednesday: "수요일",
+};
 
 const makeFadeInUp = (
   yOffset: number,
@@ -39,7 +44,7 @@ const steps = [
 
 export default function VariantKNewcomerPage() {
   const rm = useReducedMotion();
-  const sundayServices = initialWorships.filter((w) => w.day === "sunday");
+  const allServices = initialWorships;
 
   return (
     <>
@@ -60,7 +65,7 @@ export default function VariantKNewcomerPage() {
           <div className="absolute inset-0 bg-black/50" />
         </div>
 
-        <Container size="lg" className="relative z-10 flex items-center min-h-[calc(50vh-5rem)]">
+        <Container size="lg" className="relative z-10 flex items-center min-h-[50vh]">
           <motion.div
             initial={rm ? false : { opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -165,7 +170,7 @@ export default function VariantKNewcomerPage() {
           </motion.div>
 
           <div className="space-y-4 max-w-xl mx-auto">
-            {sundayServices.map((service, i) => (
+            {allServices.map((service, i) => (
               <motion.div
                 key={service.id}
                 variants={makeFadeInUp(10, i * 0.08, 0.5, rm)}
@@ -175,8 +180,8 @@ export default function VariantKNewcomerPage() {
                 className="flex items-center justify-between p-5 bg-neutral-50 rounded-xl border border-neutral-100"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-neutral-900 text-white flex items-center justify-center text-sm font-bold">
-                    {i + 1}부
+                  <div className="w-10 h-10 rounded-full bg-neutral-900 text-white flex items-center justify-center text-[11px] font-bold leading-none">
+                    {dayLabel[service.day] || service.day}
                   </div>
                   <span className="font-medium text-neutral-900">{service.name}</span>
                 </div>

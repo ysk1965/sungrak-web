@@ -216,7 +216,7 @@ export default function Home() {
         </div>
 
         {/* Summary */}
-        <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+        <div className="mt-12 grid grid-cols-3 md:grid-cols-6 gap-3 text-center">
           {variants.map((v) => (
             <Link
               key={v.id}

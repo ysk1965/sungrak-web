@@ -69,7 +69,7 @@ export default function VariantKAboutPage() {
       <section
         id="variant-k-content"
         aria-label="교회소개"
-        className="relative min-h-[60vh] mt-16 md:mt-20 overflow-hidden"
+        className="relative min-h-[50vh] mt-16 md:mt-20 overflow-hidden"
       >
         <div className="absolute inset-0" aria-hidden="true">
           <Image
@@ -82,7 +82,7 @@ export default function VariantKAboutPage() {
           <div className="absolute inset-0 bg-black/50" />
         </div>
 
-        <Container size="lg" className="relative z-10 flex items-center min-h-[calc(60vh-5rem)]">
+        <Container size="lg" className="relative z-10 flex items-center min-h-[50vh]">
           <motion.div
             initial={rm ? false : { opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}

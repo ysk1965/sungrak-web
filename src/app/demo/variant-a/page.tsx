@@ -117,7 +117,7 @@ export default function VariantAPage() {
             }
             className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6"
           >
-            <span className="block">Faith, a Relationship</span>
+            <span className="block">Sincere Devotion,</span>
             <motion.span
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -128,7 +128,7 @@ export default function VariantAPage() {
               }
               className="block text-transparent bg-clip-text bg-gradient-to-r from-primary-300 to-primary-500"
             >
-              with the Lord
+              Compassionate Fellowship
             </motion.span>
           </motion.h1>
 
@@ -142,7 +142,7 @@ export default function VariantAPage() {
             }
             className="text-lg md:text-xl text-white/80 mb-10 max-w-2xl leading-relaxed"
           >
-            신실한 헌신, 긍휼한 아낌
+            신실한 헌신, 긍휼한 사귐
             <br />
             성락교회에 오신 것을 환영합니다
           </motion.p>
@@ -339,7 +339,7 @@ export default function VariantAPage() {
               <span className="text-primary-500">소개합니다</span>
             </h2>
             <p className="text-neutral-600 leading-relaxed mb-6">
-              성락교회는 &quot;신실한 헌신, 긍휼한 아낌&quot;이라는 비전 아래,
+              성락교회는 &quot;신실한 헌신, 긍휼한 사귐&quot;이라는 비전 아래,
               하나님과 이웃을 섬기는 공동체입니다. 예수 그리스도의 사랑 안에서
               함께 성장하고, 세상을 변화시키는 빛과 소금이 되기를 소망합니다.
             </p>

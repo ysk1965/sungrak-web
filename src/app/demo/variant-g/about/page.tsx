@@ -156,7 +156,7 @@ export default function VariantGAboutPage() {
               교회소개
             </h1>
             <p className="text-white/60 text-lg md:text-xl">
-              신실한 헌신, 긍휼한 아낌
+              신실한 헌신, 긍휼한 사귐
             </p>
           </motion.div>
         </div>
