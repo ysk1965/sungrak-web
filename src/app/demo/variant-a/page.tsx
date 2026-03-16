@@ -7,6 +7,7 @@ import {
   useReducedMotion,
 } from "framer-motion";
 import { useRef } from "react";
+import { useBasePath } from "@/contexts/base-path-context";
 import {
   Play,
   ArrowRight,
@@ -40,6 +41,7 @@ import {
 export default function VariantAPage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
+  const basePath = useBasePath();
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -60,7 +62,7 @@ export default function VariantAPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header variant="transparent" />
+      <Header variant="transparent" basePath={basePath} />
 
       {/* Hero Section - 풀스크린 비디오 스타일 */}
       <section
@@ -297,7 +299,7 @@ export default function VariantAPage() {
               </motion.div>
             ))}
             <Link
-              href="/sermons"
+              href={`${basePath}/sermons`}
               className="inline-flex items-center gap-2 text-primary-500 hover:text-primary-600 font-medium mt-4 group min-h-[44px]"
             >
               전체 설교 보기
@@ -354,7 +356,7 @@ export default function VariantAPage() {
                 </motion.span>
               ))}
             </div>
-            <Link href="/about">
+            <Link href={`${basePath}/about`}>
               <Button className="group min-h-[44px]">
                 자세히 보기
                 <ArrowRight
@@ -488,7 +490,7 @@ export default function VariantAPage() {
           transition={shouldReduceMotion ? reducedTransition : undefined}
           className="text-center mt-8"
         >
-          <Link href="/news">
+          <Link href={`${basePath}/news`}>
             <Button variant="outline" className="group min-h-[44px]">
               전체 소식 보기
               <ArrowRight
@@ -520,19 +522,19 @@ export default function VariantAPage() {
               {
                 icon: MapPin,
                 label: "오시는 길",
-                href: "/about#location",
+                href: `${basePath}/about#location`,
                 color: "text-green-500",
               },
               {
                 icon: Clock,
                 label: "예배시간",
-                href: "/worship",
+                href: `${basePath}/worship`,
                 color: "text-blue-500",
               },
               {
                 icon: ExternalLink,
                 label: "문의하기",
-                href: "/contact",
+                href: `${basePath}/newcomer`,
                 color: "text-purple-500",
               },
             ].map((item, i) => (
@@ -560,7 +562,7 @@ export default function VariantAPage() {
         </Container>
       </section>
 
-      <Footer />
+      <Footer basePath={basePath} />
 
       {/* Back to Demo Selection */}
       <Link
