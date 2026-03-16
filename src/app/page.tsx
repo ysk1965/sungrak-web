@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Layout, Type, PanelTop, BookOpen, Moon, ImageIcon } from "lucide-react";
+import { ArrowRight, Layout, PanelTop, BookOpen, Moon } from "lucide-react";
 
 const variants = [
   {
@@ -21,21 +21,8 @@ const variants = [
   },
   {
     id: "b",
-    href: "/demo/variant-e",
-    title: "시안 B",
-    subtitle: "미니멀",
-    description: "텍스트 중심, 여백과 타이포그래피 강조",
-    icon: Type,
-    features: ["대형 타이포그래피", "여백 활용", "심플한 구성"],
-    color: "from-neutral-700 to-neutral-900",
-    preview:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600",
-    tag: "미니멀",
-  },
-  {
-    id: "c",
     href: "/demo/variant-g",
-    title: "시안 C",
+    title: "시안 B",
     subtitle: "스냅 스크롤",
     description: "풀스크린 섹션, 다크 시네마틱, 스냅 스크롤",
     icon: PanelTop,
@@ -46,9 +33,9 @@ const variants = [
     tag: "스냅 스크롤",
   },
   {
-    id: "d",
+    id: "c",
     href: "/demo/variant-i",
-    title: "시안 D",
+    title: "시안 C",
     subtitle: "매거진/에디토리얼",
     description: "에디토리얼 스토리텔링, 수평 캐러셀, 따뜻한 색감",
     icon: BookOpen,
@@ -59,9 +46,9 @@ const variants = [
     tag: "매거진",
   },
   {
-    id: "e",
+    id: "d",
     href: "/demo/variant-j",
-    title: "시안 E",
+    title: "시안 D",
     subtitle: "다크 모던",
     description: "다크 테마, 골드 액센트, 이미지 중심, 소셜 미디어 통합",
     icon: Moon,
@@ -70,19 +57,6 @@ const variants = [
     preview:
       "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?q=80&w=600",
     tag: "다크 모드",
-  },
-  {
-    id: "f",
-    href: "/demo/variant-k",
-    title: "시안 F",
-    subtitle: "화이트 미니멀",
-    description: "화이트 베이스, 풀스크린 슬라이더, 3열 카드, 정보 전달형",
-    icon: ImageIcon,
-    features: ["이미지 슬라이더", "3-column 예배카드", "화이트 스페이스"],
-    color: "from-neutral-400 to-neutral-700",
-    preview:
-      "https://images.unsplash.com/photo-1519834785169-98be25ec3f84?q=80&w=600",
-    tag: "화이트 미니멀",
   },
 ];
 
@@ -113,20 +87,14 @@ export default function Home() {
           <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-medium">
             A: 밸런스형
           </span>
-          <span className="px-3 py-1 rounded-full bg-neutral-200 text-neutral-700 text-xs font-medium">
-            B: 미니멀
-          </span>
           <span className="px-3 py-1 rounded-full bg-violet-100 text-violet-700 text-xs font-medium">
-            C: 스냅 스크롤
+            B: 스냅 스크롤
           </span>
           <span className="px-3 py-1 rounded-full bg-rose-100 text-rose-700 text-xs font-medium">
-            D: 매거진/에디토리얼
+            C: 매거진/에디토리얼
           </span>
           <span className="px-3 py-1 rounded-full bg-stone-800 text-amber-400 text-xs font-medium">
-            E: 다크 모던
-          </span>
-          <span className="px-3 py-1 rounded-full bg-neutral-100 text-neutral-600 text-xs font-medium">
-            F: 화이트 미니멀
+            D: 다크 모던
           </span>
         </div>
       </div>
@@ -216,7 +184,7 @@ export default function Home() {
         </div>
 
         {/* Summary */}
-        <div className="mt-12 grid grid-cols-3 md:grid-cols-6 gap-3 text-center">
+        <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
           {variants.map((v) => (
             <Link
               key={v.id}

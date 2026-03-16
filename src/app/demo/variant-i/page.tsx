@@ -7,15 +7,18 @@ import {
   useReducedMotion,
   type Variants,
 } from "framer-motion";
-import { useRef, useCallback, useId } from "react";
+import { useRef } from "react";
 import {
   ArrowRight,
-  ArrowLeft,
+  ArrowDown,
   Play,
   Clock,
   MapPin,
   Users,
   Heart,
+  Youtube,
+  Instagram,
+  Facebook,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -24,7 +27,8 @@ import { Footer } from "@/components/common/footer";
 import { Container } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { SermonCard, NewsCard } from "@/components/home";
+import { SermonCard } from "@/components/home";
+import { formatDate } from "@/lib/utils";
 import {
   initialSermons,
   initialNotices,
@@ -33,9 +37,17 @@ import {
 } from "@/mocks/data/initial";
 
 const sermons = initialSermons;
-const notices = initialNotices.slice(0, 3);
+const featuredSermon = sermons[0];
+const recentSermons = sermons.slice(1, 4);
+const notices = initialNotices;
 const worships = initialWorships;
 const churchInfo = initialChurchInfo;
+
+const CATEGORY_LABEL: Record<string, string> = {
+  event: "행사",
+  weekly: "주보",
+  news: "소식",
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Animation variant factories
@@ -100,9 +112,7 @@ const makeFadeIn = (delay: number, reduced: boolean | null): Variants => ({
 
 export default function VariantIPage() {
   const heroRef = useRef<HTMLDivElement>(null);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
-  const carouselId = useId();
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -115,30 +125,6 @@ export default function VariantIPage() {
   const heroImageXRaw = useTransform(scrollYProgress, [0, 1], [0, 40]);
   const heroTextY = prefersReducedMotion ? undefined : heroTextYRaw;
   const heroImageX = prefersReducedMotion ? undefined : heroImageXRaw;
-
-  const scrollCarousel = useCallback((direction: "left" | "right") => {
-    if (scrollContainerRef.current) {
-      const scrollAmount = 400;
-      scrollContainerRef.current.scrollBy({
-        left: direction === "left" ? -scrollAmount : scrollAmount,
-        behavior: "smooth",
-      });
-    }
-  }, []);
-
-  /** Keyboard handler for carousel: ArrowLeft / ArrowRight scrolls the track */
-  const handleCarouselKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        scrollCarousel("left");
-      } else if (e.key === "ArrowRight") {
-        e.preventDefault();
-        scrollCarousel("right");
-      }
-    },
-    [scrollCarousel],
-  );
 
   const greetingParagraphs = churchInfo.greeting.content.split("\n\n");
   const rm = prefersReducedMotion; // shorthand
@@ -205,10 +191,26 @@ export default function VariantIPage() {
                 variants={makeFadeInUp(20, 0.2, 0.6, rm)}
                 initial="hidden"
                 animate="visible"
-                className="text-lg text-neutral-500 mb-10 tracking-wide"
+                className="text-lg text-neutral-500 mb-4 tracking-wide"
               >
                 Sincere Devotion, Compassionate Fellowship
               </motion.p>
+
+              {/* Editorial dateline */}
+              <motion.div
+                variants={makeFadeInUp(10, 0.25, 0.5, rm)}
+                initial="hidden"
+                animate="visible"
+                className="mb-10"
+              >
+                <div
+                  aria-hidden="true"
+                  className="w-16 h-px bg-primary-300/50 mb-4"
+                />
+                <p className="text-sm text-neutral-400 tracking-wide">
+                  2024년 1월 &middot; 이 주의 말씀: 히브리서 11:1
+                </p>
+              </motion.div>
 
               <motion.div
                 variants={makeFadeInUp(20, 0.3, 0.6, rm)}
@@ -290,9 +292,33 @@ export default function VariantIPage() {
             </motion.div>
           </div>
         </Container>
+
+        {/* Scroll indicator */}
+        <motion.div
+          aria-hidden="true"
+          initial={rm ? { opacity: 1 } : { opacity: 0 }}
+          animate={
+            rm
+              ? { opacity: 1 }
+              : { opacity: 1, transition: { delay: 1.2, duration: 0.6 } }
+          }
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        >
+          <span className="text-xs text-neutral-400 tracking-[0.2em] uppercase">
+            Scroll
+          </span>
+          <motion.div
+            animate={rm ? undefined : { y: [0, 6, 0] }}
+            transition={
+              rm ? undefined : { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
+            }
+          >
+            <ArrowDown size={16} className="text-neutral-400" />
+          </motion.div>
+        </motion.div>
       </section>
 
-      {/* ===== Sermon Horizontal Carousel ===== */}
+      {/* ===== Featured Sermon "Cover Story" ===== */}
       <section aria-label="최신 설교" className="bg-white py-20">
         <Container size="xl">
           {/* Header row */}
@@ -317,105 +343,58 @@ export default function VariantIPage() {
                 최신 설교
               </motion.h2>
             </div>
-            <div className="flex items-center gap-3">
-              {/* Scroll arrows */}
-              <button
-                type="button"
-                onClick={() => scrollCarousel("left")}
-                className="w-11 h-11 rounded-full border border-neutral-200 flex items-center justify-center hover:bg-neutral-50 hover:border-neutral-300 transition-colors focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
-                aria-label="이전 설교로 이동"
-                aria-controls={`carousel-${carouselId}`}
-              >
-                <ArrowLeft
-                  size={18}
-                  aria-hidden="true"
-                  className="text-neutral-600"
-                />
-              </button>
-              <button
-                type="button"
-                onClick={() => scrollCarousel("right")}
-                className="w-11 h-11 rounded-full border border-neutral-200 flex items-center justify-center hover:bg-neutral-50 hover:border-neutral-300 transition-colors focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
-                aria-label="다음 설교로 이동"
-                aria-controls={`carousel-${carouselId}`}
-              >
+            <Link href="/sermons">
+              <Button variant="ghost" className="group text-base">
+                전체 보기
                 <ArrowRight
                   size={18}
                   aria-hidden="true"
-                  className="text-neutral-600"
+                  className="group-hover:translate-x-1 transition-transform"
                 />
-              </button>
-              <Link href="/sermons" className="hidden sm:block">
-                <Button variant="ghost" className="group text-base">
-                  전체 보기
-                  <ArrowRight
-                    size={18}
-                    aria-hidden="true"
-                    className="group-hover:translate-x-1 transition-transform"
-                  />
-                </Button>
-              </Link>
-            </div>
+              </Button>
+            </Link>
+          </div>
+
+          {/* Cover Story: Featured + Sidebar */}
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+            {/* Featured sermon — large cover */}
+            <motion.div
+              variants={makeFadeInX(-30, 0, 0.7, rm)}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="lg:col-span-3"
+            >
+              <SermonCard sermon={featuredSermon} variant="featured" />
+            </motion.div>
+
+            {/* Recent sermons sidebar */}
+            <motion.div
+              variants={makeFadeInX(30, 0.1, 0.7, rm)}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="lg:col-span-2 flex flex-col gap-6 justify-center"
+            >
+              <h3 className="text-sm text-neutral-400 font-medium tracking-[0.2em] uppercase">
+                Recent
+              </h3>
+              <div className="space-y-6">
+                {recentSermons.map((sermon, i) => (
+                  <motion.div
+                    key={sermon.id}
+                    variants={makeFadeInUp(15, i * 0.1, 0.4, rm)}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                  >
+                    <SermonCard sermon={sermon} variant="compact" />
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
           </div>
         </Container>
-
-        {/* Horizontal scroll container — carousel landmark */}
-        <div
-          role="region"
-          aria-roledescription="carousel"
-          aria-label="설교 목록"
-        >
-          <div
-            id={`carousel-${carouselId}`}
-            ref={scrollContainerRef}
-            tabIndex={0}
-            onKeyDown={handleCarouselKeyDown}
-            className="flex gap-6 overflow-x-auto pb-4 px-4 sm:px-6 lg:px-8 snap-x snap-mandatory scrollbar-hide focus-visible:outline-2 focus-visible:outline-primary-500 focus-visible:outline-offset-2"
-            aria-label="설교 카드 목록 (좌우 화살표 키로 스크롤)"
-          >
-            {/* Left spacer for alignment with container */}
-            <div
-              aria-hidden="true"
-              className="shrink-0 w-0 lg:w-[calc((100vw-80rem)/2)]"
-            />
-
-            {sermons.map((sermon, i) => (
-              <motion.div
-                key={sermon.id}
-                role="group"
-                aria-roledescription="slide"
-                aria-label={`설교 ${i + 1} / ${sermons.length}: ${sermon.title}`}
-                variants={makeFadeInX(40, i * 0.1, 0.5, rm)}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                className="min-w-[320px] md:min-w-[380px] shrink-0 snap-start"
-              >
-                <SermonCard sermon={sermon} />
-              </motion.div>
-            ))}
-
-            {/* Right spacer */}
-            <div
-              aria-hidden="true"
-              className="shrink-0 w-4 lg:w-[calc((100vw-80rem)/2)]"
-            />
-          </div>
-        </div>
-
-        {/* Mobile "View All" link */}
-        <div className="sm:hidden mt-6 text-center">
-          <Link href="/sermons">
-            <Button variant="ghost" className="group text-base">
-              전체 보기
-              <ArrowRight
-                size={18}
-                aria-hidden="true"
-                className="group-hover:translate-x-1 transition-transform"
-              />
-            </Button>
-          </Link>
-        </div>
       </section>
 
       {/* ===== Pull-Quote Vision Section ===== */}
@@ -698,62 +677,117 @@ export default function VariantIPage() {
         </Container>
       </section>
 
-      {/* ===== News Section ===== */}
+      {/* ===== Editorial News List ===== */}
       <section aria-label="교회 소식" className="bg-[#FAF8F3] py-20">
         <Container size="xl">
-          <div className="text-center mb-12">
-            <motion.p
-              variants={makeFadeInUp(10, 0, 0.5, rm)}
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
+            {/* Left — Section intro */}
+            <motion.div
+              variants={makeFadeInX(-30, 0, 0.7, rm)}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="text-sm text-primary-500 font-medium tracking-[0.3em] uppercase mb-2"
+              className="lg:col-span-2"
             >
-              LATEST NEWS
-            </motion.p>
-            <motion.h2
-              variants={makeFadeInUp(20, 0, 0.6, rm)}
+              <p className="text-sm text-primary-500 font-medium tracking-[0.3em] uppercase mb-3">
+                LATEST NEWS
+              </p>
+              <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4 leading-tight">
+                교회 소식
+              </h2>
+              <p className="text-neutral-500 leading-relaxed mb-8 text-lg max-w-sm">
+                성락교회의 최신 소식과 행사 안내를 확인하세요.
+              </p>
+              <Link href="/news">
+                <Button variant="outline" className="group border-2 text-base">
+                  소식 전체 보기
+                  <ArrowRight
+                    size={18}
+                    aria-hidden="true"
+                    className="group-hover:translate-x-1 transition-transform"
+                  />
+                </Button>
+              </Link>
+            </motion.div>
+
+            {/* Right — Notice list */}
+            <motion.div
+              variants={makeFadeInX(30, 0.1, 0.7, rm)}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="text-3xl md:text-4xl font-bold text-neutral-900"
+              className="lg:col-span-3"
             >
-              교회 소식
-            </motion.h2>
+              <div className="divide-y divide-primary-100">
+                {notices.map((notice, i) => (
+                  <motion.div
+                    key={notice.id}
+                    variants={makeFadeInUp(10, i * 0.08, 0.4, rm)}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                  >
+                    <Link
+                      href="/news"
+                      className="flex items-center gap-4 py-5 group hover:bg-primary-50/50 -mx-4 px-4 rounded-lg transition-colors"
+                    >
+                      <Badge
+                        variant="secondary"
+                        className="shrink-0 px-3 py-1 rounded-full text-xs bg-primary-50 text-primary-700 border border-primary-100"
+                      >
+                        {CATEGORY_LABEL[notice.category] || notice.category}
+                      </Badge>
+                      <span className="flex-1 min-w-0 font-medium text-neutral-800 truncate group-hover:text-primary-600 transition-colors">
+                        {notice.title}
+                      </span>
+                      <span className="shrink-0 text-sm text-neutral-400 hidden sm:block">
+                        {formatDate(notice.createdAt)}
+                      </span>
+                      <ArrowRight
+                        size={16}
+                        aria-hidden="true"
+                        className="shrink-0 text-neutral-300 group-hover:text-primary-500 group-hover:translate-x-1 transition-all"
+                      />
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
           </div>
+        </Container>
+      </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {notices.map((notice, i) => (
-              <motion.div
-                key={notice.id}
-                variants={makeFadeInUp(30, i * 0.1, 0.5, rm)}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                whileHover={rm ? undefined : { y: -5 }}
-              >
-                <NewsCard notice={notice} />
-              </motion.div>
-            ))}
-          </div>
-
+      {/* ===== Social Links ===== */}
+      <section aria-label="소셜 미디어" className="bg-[#FAF8F3] py-16">
+        <Container size="xl">
           <motion.div
-            variants={makeFadeIn(0.4, rm)}
+            variants={makeFadeInUp(20, 0, 0.6, rm)}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="text-center mt-10"
+            className="text-center"
           >
-            <Link href="/news">
-              <Button variant="ghost" className="group text-base">
-                소식 더 보기
-                <ArrowRight
-                  size={18}
-                  aria-hidden="true"
-                  className="group-hover:translate-x-1 transition-transform"
-                />
-              </Button>
-            </Link>
+            <p className="text-sm text-neutral-400 font-medium tracking-[0.3em] uppercase mb-6">
+              FOLLOW US
+            </p>
+            <div className="flex items-center justify-center gap-4">
+              {[
+                { Icon: Youtube, label: "YouTube", href: "https://youtube.com" },
+                { Icon: Instagram, label: "Instagram", href: "https://instagram.com" },
+                { Icon: Facebook, label: "Facebook", href: "https://facebook.com" },
+              ].map(({ Icon, label, href }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="w-12 h-12 rounded-full border border-primary-200 flex items-center justify-center text-neutral-500 hover:border-primary-400 hover:text-primary-500 hover:bg-primary-50 transition-colors"
+                >
+                  <Icon size={20} aria-hidden="true" />
+                </a>
+              ))}
+            </div>
           </motion.div>
         </Container>
       </section>
