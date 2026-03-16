@@ -14,6 +14,8 @@ import {
   Play,
   Clock,
   MapPin,
+  Phone,
+  ExternalLink,
   Youtube,
   Instagram,
   Facebook,
@@ -28,6 +30,7 @@ import {
   initialSermons,
   initialNotices,
   initialChurchInfo,
+  initialWorships,
 } from "@/mocks/data/initial";
 import { useBasePath } from "@/contexts/base-path-context";
 import { formatDate } from "@/lib/utils";
@@ -106,6 +109,16 @@ const socialLinks = [
 ];
 
 /* ------------------------------------------------------------------ */
+/*  Notice category labels                                             */
+/* ------------------------------------------------------------------ */
+
+const categoryLabels: Record<string, string> = {
+  news: "소식",
+  event: "행사",
+  weekly: "주보",
+};
+
+/* ------------------------------------------------------------------ */
 /*  Page component                                                     */
 /* ------------------------------------------------------------------ */
 
@@ -163,6 +176,13 @@ export default function VariantJPage() {
             className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-stone-950/70 via-stone-950/50 to-stone-950" />
+          {/* Film grain texture */}
+          <div
+            className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+            }}
+          />
         </div>
 
         {/* Hero content */}
@@ -265,19 +285,30 @@ export default function VariantJPage() {
           animate={{ opacity: 1 }}
           transition={shouldReduceMotion ? { duration: 0 } : { delay: 1.2 }}
           className="relative z-10 pb-12 text-center"
-          aria-hidden="true"
         >
-          <motion.div
-            animate={shouldReduceMotion ? {} : { y: [0, 10, 0] }}
-            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-            className="flex flex-col items-center gap-3"
+          <a
+            href="#image-cards"
+            aria-label="아래로 스크롤"
+            className="inline-block"
+            onClick={(e) => {
+              e.preventDefault();
+              document
+                .getElementById("image-cards")
+                ?.scrollIntoView({ behavior: "smooth" });
+            }}
           >
-            <span className="text-xs tracking-[0.2em] text-stone-500 uppercase">
-              Scroll to explore
-            </span>
-            <div className="w-px h-12 bg-gradient-to-b from-amber-400/60 to-transparent" />
-            <ArrowDown size={18} className="text-amber-400/60" />
-          </motion.div>
+            <motion.div
+              animate={shouldReduceMotion ? {} : { y: [0, 10, 0] }}
+              transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+              className="flex flex-col items-center gap-3"
+            >
+              <span className="text-xs tracking-[0.2em] text-stone-500 uppercase">
+                Scroll to explore
+              </span>
+              <div className="w-px h-12 bg-gradient-to-b from-amber-400/60 to-transparent" />
+              <ArrowDown size={18} className="text-amber-400/60" />
+            </motion.div>
+          </a>
         </motion.div>
       </section>
 
@@ -285,6 +316,7 @@ export default function VariantJPage() {
       {/* 2. 3-COLUMN IMAGE CARDS -- POD21 style                       */}
       {/* ============================================================ */}
       <section
+        id="image-cards"
         className="bg-stone-950 py-24 md:py-32"
         aria-label="주요 메뉴 카드"
       >
@@ -336,9 +368,77 @@ export default function VariantJPage() {
       </section>
 
       {/* ============================================================ */}
-      {/* 3. FEATURED SERMON (MEDIA)                                   */}
+      {/* 3. WORSHIP TIMES                                             */}
       {/* ============================================================ */}
-      <section className="bg-stone-900 py-24 md:py-32" aria-label="최근 설교">
+      <section
+        id="worship-times"
+        className="bg-stone-900 py-24 md:py-32"
+        aria-label="예배 안내"
+      >
+        <Container size="lg">
+          <motion.div
+            variants={fadeUp(0)}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="flex items-end justify-between mb-14"
+          >
+            <div>
+              <p className="text-amber-400 text-xs font-medium tracking-[0.3em] uppercase mb-3">
+                WORSHIP
+              </p>
+              <h2 className="text-3xl md:text-5xl font-bold text-white">
+                예배 안내
+              </h2>
+            </div>
+            <Link href={`${basePath}/worship`}>
+              <Button
+                variant="ghost"
+                className="group text-base min-h-[44px] text-stone-400 hover:text-amber-400 hover:bg-transparent"
+              >
+                전체 보기
+                <ArrowRight
+                  size={18}
+                  aria-hidden="true"
+                  className="group-hover:translate-x-1 transition-transform motion-reduce:transition-none"
+                />
+              </Button>
+            </Link>
+          </motion.div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {initialWorships
+              .sort((a, b) => a.order - b.order)
+              .map((worship, i) => (
+                <motion.div
+                  key={worship.id}
+                  variants={fadeUp(i * 0.08)}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  className="bg-stone-800/50 backdrop-blur border border-stone-700/50 rounded-xl p-5 hover:border-amber-500/30 transition-colors motion-reduce:transition-none"
+                >
+                  <h3 className="text-white font-semibold text-sm md:text-base mb-3">
+                    {worship.name}
+                  </h3>
+                  <div className="flex items-center gap-2 text-amber-400 text-sm mb-2">
+                    <Clock size={14} aria-hidden="true" />
+                    <span>{worship.time}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-stone-400 text-xs">
+                    <MapPin size={14} aria-hidden="true" />
+                    <span>{worship.location}</span>
+                  </div>
+                </motion.div>
+              ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 4. FEATURED SERMON (MEDIA)                                   */}
+      {/* ============================================================ */}
+      <section id="sermons" className="bg-stone-950 py-24 md:py-32" aria-label="최근 설교">
         <Container size="lg">
           {/* Section header */}
           <motion.div
@@ -429,8 +529,9 @@ export default function VariantJPage() {
               className="lg:col-span-2 flex flex-col gap-4"
             >
               {recentSermons.map((sermon) => (
-                <div
+                <Link
                   key={sermon.id}
+                  href={`${basePath}/sermons`}
                   className="group flex gap-4 p-4 rounded-xl bg-stone-800/50 backdrop-blur border border-stone-700/50 hover:border-amber-500/30 transition-colors motion-reduce:transition-none"
                 >
                   {/* Thumbnail */}
@@ -462,7 +563,7 @@ export default function VariantJPage() {
                       {formatDate(sermon.publishedAt)}
                     </p>
                   </div>
-                </div>
+                </Link>
               ))}
             </motion.div>
           </div>
@@ -473,6 +574,7 @@ export default function VariantJPage() {
       {/* 4. VISION / ABOUT -- Full-width parallax                     */}
       {/* ============================================================ */}
       <section
+        id="vision"
         className="relative py-32 md:py-44 overflow-hidden"
         aria-label="비전"
       >
@@ -555,9 +657,81 @@ export default function VariantJPage() {
       </section>
 
       {/* ============================================================ */}
-      {/* 5. NOTICE (공지사항)                                          */}
+      {/* 6. PASTOR GREETING                                           */}
       {/* ============================================================ */}
-      <section className="bg-stone-950 py-24 md:py-32" aria-label="공지사항">
+      <section
+        id="pastor"
+        className="bg-stone-950 py-24 md:py-32"
+        aria-label="담임목사 인사말"
+      >
+        <Container size="lg">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-14 items-center">
+            {/* Pastor image */}
+            <motion.div
+              variants={fadeLeft(0)}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="lg:col-span-2"
+            >
+              <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-amber-500/20">
+                <Image
+                  src={initialChurchInfo.greeting.pastorImage || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2070"}
+                  alt={initialChurchInfo.greeting.pastorName}
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-stone-950/40 to-transparent" />
+              </div>
+            </motion.div>
+
+            {/* Greeting text */}
+            <motion.div
+              variants={fadeRight(0.15)}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="lg:col-span-3"
+            >
+              <p className="text-amber-400 text-xs font-medium tracking-[0.3em] uppercase mb-4">
+                PASTOR&apos;S MESSAGE
+              </p>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+                {initialChurchInfo.greeting.title}
+              </h2>
+              <div className="space-y-4 text-stone-400 text-base md:text-lg leading-relaxed mb-8">
+                {initialChurchInfo.greeting.content
+                  .split("\n\n")
+                  .slice(0, 2)
+                  .map((paragraph, i) => (
+                    <p key={i}>{paragraph}</p>
+                  ))}
+              </div>
+              <p className="text-amber-400/80 font-medium mb-8">
+                — {initialChurchInfo.greeting.pastorName}
+              </p>
+              <Link href={`${basePath}/about`}>
+                <Button
+                  variant="outline"
+                  className="group min-h-[44px] border-stone-700 text-stone-300 hover:border-amber-500/50 hover:text-amber-400 hover:bg-transparent"
+                >
+                  더 알아보기
+                  <ArrowRight
+                    size={18}
+                    aria-hidden="true"
+                    className="group-hover:translate-x-1 transition-transform motion-reduce:transition-none"
+                  />
+                </Button>
+              </Link>
+            </motion.div>
+          </div>
+        </Container>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 7. NOTICE (공지사항)                                          */}
+      {/* ============================================================ */}
+      <section id="notices" className="bg-stone-900 py-24 md:py-32" aria-label="공지사항">
         <Container size="lg">
           <motion.div
             variants={fadeUp(0)}
@@ -598,8 +772,16 @@ export default function VariantJPage() {
                 whileInView="visible"
                 viewport={{ once: true }}
               >
-                <div className="group flex items-center justify-between py-5 px-4 -mx-4 rounded-lg cursor-pointer hover:bg-stone-900 transition-colors motion-reduce:transition-none">
-                  <div className="flex-1 min-w-0">
+                <div className="group flex items-center justify-between py-5 px-4 -mx-4 rounded-lg cursor-pointer hover:bg-stone-800/50 transition-colors motion-reduce:transition-none">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    {notice.isPinned && (
+                      <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px] px-2 py-0.5 flex-shrink-0">
+                        고정
+                      </Badge>
+                    )}
+                    <Badge className="bg-stone-700/50 text-stone-400 border-stone-600/50 text-[10px] px-2 py-0.5 flex-shrink-0">
+                      {categoryLabels[notice.category] || notice.category}
+                    </Badge>
                     <h3 className="text-white text-base md:text-lg font-medium truncate group-hover:text-amber-400 transition-colors motion-reduce:transition-none">
                       {notice.title}
                     </h3>
@@ -622,9 +804,100 @@ export default function VariantJPage() {
       </section>
 
       {/* ============================================================ */}
-      {/* 6. SOCIAL & CTA -- Bottom section                            */}
+      {/* 8. CONTACT / LOCATION                                        */}
       {/* ============================================================ */}
       <section
+        id="contact"
+        className="bg-stone-950 py-24 md:py-32"
+        aria-label="오시는 길"
+      >
+        <Container size="md">
+          <motion.div
+            variants={fadeUp(0)}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="text-center mb-14"
+          >
+            <p className="text-amber-400 text-xs font-medium tracking-[0.3em] uppercase mb-3">
+              CONTACT
+            </p>
+            <h2 className="text-3xl md:text-5xl font-bold text-white">
+              오시는 길
+            </h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Address */}
+            <motion.div
+              variants={fadeUp(0)}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="bg-stone-800/50 backdrop-blur border border-stone-700/50 rounded-xl p-6 text-center hover:border-amber-500/30 transition-colors motion-reduce:transition-none"
+            >
+              <div className="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-4">
+                <MapPin size={20} className="text-amber-400" aria-hidden="true" />
+              </div>
+              <h3 className="text-white font-semibold mb-2">주소</h3>
+              <p className="text-stone-400 text-sm leading-relaxed">
+                {initialChurchInfo.location.address}
+              </p>
+            </motion.div>
+
+            {/* Phone */}
+            <motion.div
+              variants={fadeUp(0.1)}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="bg-stone-800/50 backdrop-blur border border-stone-700/50 rounded-xl p-6 text-center hover:border-amber-500/30 transition-colors motion-reduce:transition-none"
+            >
+              <div className="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-4">
+                <Phone size={20} className="text-amber-400" aria-hidden="true" />
+              </div>
+              <h3 className="text-white font-semibold mb-2">전화</h3>
+              <p className="text-stone-400 text-sm">
+                {initialChurchInfo.location.phone}
+              </p>
+              {initialChurchInfo.location.fax && (
+                <p className="text-stone-500 text-xs mt-1">
+                  FAX {initialChurchInfo.location.fax}
+                </p>
+              )}
+            </motion.div>
+
+            {/* Directions */}
+            <motion.div
+              variants={fadeUp(0.2)}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="bg-stone-800/50 backdrop-blur border border-stone-700/50 rounded-xl p-6 text-center hover:border-amber-500/30 transition-colors motion-reduce:transition-none"
+            >
+              <div className="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-4">
+                <ExternalLink size={20} className="text-amber-400" aria-hidden="true" />
+              </div>
+              <h3 className="text-white font-semibold mb-2">길찾기</h3>
+              <a
+                href={`https://map.naver.com/v5/search/${encodeURIComponent(initialChurchInfo.location.address)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-amber-400 text-sm hover:text-amber-300 transition-colors"
+              >
+                네이버 지도에서 보기
+                <ExternalLink size={12} aria-hidden="true" />
+              </a>
+            </motion.div>
+          </div>
+        </Container>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 9. SOCIAL & CTA -- Bottom section                            */}
+      {/* ============================================================ */}
+      <section
+        id="social"
         className="bg-stone-900 py-24 md:py-32"
         aria-label="소셜 미디어 및 새가족 안내"
       >
