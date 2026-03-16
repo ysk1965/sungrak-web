@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Container } from "./container";
@@ -17,10 +18,12 @@ const navItems = [
 
 interface HeaderProps {
   variant?: "default" | "transparent";
+  basePath?: string;
 }
 
-export function Header({ variant = "default" }: HeaderProps) {
+export function Header({ variant = "default", basePath = "" }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <>
@@ -38,7 +41,7 @@ export function Header({ variant = "default" }: HeaderProps) {
             aria-label="주 내비게이션"
           >
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2">
+            <Link href={basePath || "/"} className="flex items-center gap-2">
               <div
                 className={cn(
                   "text-xl md:text-2xl font-bold transition-colors",
@@ -54,12 +57,14 @@ export function Header({ variant = "default" }: HeaderProps) {
               {navItems.map((item) => (
                 <Link
                   key={item.href}
-                  href={item.href}
+                  href={`${basePath}${item.href}`}
                   className={cn(
                     "text-sm font-medium transition-colors hover:text-primary-500",
-                    variant === "transparent"
-                      ? "text-white/90 hover:text-white"
-                      : "text-neutral-600",
+                    pathname === `${basePath}${item.href}`
+                      ? "text-primary-500 font-semibold"
+                      : variant === "transparent"
+                        ? "text-white/90 hover:text-white"
+                        : "text-neutral-600",
                   )}
                 >
                   {item.label}
@@ -104,9 +109,14 @@ export function Header({ variant = "default" }: HeaderProps) {
                   {navItems.map((item) => (
                     <Link
                       key={item.href}
-                      href={item.href}
+                      href={`${basePath}${item.href}`}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-3 px-4 text-neutral-700 hover:bg-neutral-50 rounded-lg transition-colors"
+                      className={cn(
+                        "block py-3 px-4 rounded-lg transition-colors",
+                        pathname === `${basePath}${item.href}`
+                          ? "text-primary-500 bg-primary-50 font-semibold"
+                          : "text-neutral-700 hover:bg-neutral-50",
+                      )}
                     >
                       {item.label}
                     </Link>

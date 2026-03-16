@@ -2,7 +2,11 @@ import Link from "next/link";
 import { MapPin, Phone, Clock } from "lucide-react";
 import { Container } from "./container";
 
-export function Footer() {
+interface FooterProps {
+  basePath?: string;
+}
+
+export function Footer({ basePath = "" }: FooterProps) {
   return (
     <footer className="bg-neutral-900 text-white" aria-label="사이트 푸터">
       <Container>
@@ -71,7 +75,7 @@ export function Footer() {
               <ul className="space-y-2 text-sm">
                 <li>
                   <Link
-                    href="/about"
+                    href={`${basePath}/about`}
                     className="text-neutral-400 hover:text-white transition-colors"
                   >
                     교회소개
@@ -79,7 +83,7 @@ export function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/sermons"
+                    href={`${basePath}/sermons`}
                     className="text-neutral-400 hover:text-white transition-colors"
                   >
                     설교 듣기
@@ -87,7 +91,7 @@ export function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/newcomer"
+                    href={`${basePath}/newcomer`}
                     className="text-neutral-400 hover:text-white transition-colors"
                   >
                     새가족 안내

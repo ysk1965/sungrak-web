@@ -4,12 +4,15 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Heart, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useBasePath } from "@/contexts/base-path-context";
 
 interface NewcomerCTAProps {
   variant?: "default" | "minimal";
 }
 
 export function NewcomerCTA({ variant = "default" }: NewcomerCTAProps) {
+  const basePath = useBasePath();
+
   if (variant === "minimal") {
     return (
       <motion.div
@@ -19,11 +22,9 @@ export function NewcomerCTA({ variant = "default" }: NewcomerCTAProps) {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-bold mb-1">처음 오셨나요?</h3>
-            <p className="text-white/80 text-sm">
-              성락교회가 환영합니다
-            </p>
+            <p className="text-white/80 text-sm">성락교회가 환영합니다</p>
           </div>
-          <Link href="/newcomer">
+          <Link href={`${basePath}/newcomer`}>
             <Button
               variant="secondary"
               className="bg-white text-primary-600 hover:bg-white/90"
@@ -71,7 +72,7 @@ export function NewcomerCTA({ variant = "default" }: NewcomerCTAProps) {
           </p>
         </div>
         <div className="shrink-0">
-          <Link href="/newcomer">
+          <Link href={`${basePath}/newcomer`}>
             <Button
               size="lg"
               className="bg-white text-primary-600 hover:bg-white/90 shadow-lg"
