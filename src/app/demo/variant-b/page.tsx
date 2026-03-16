@@ -257,7 +257,7 @@ export default function VariantBPage() {
               }
               className="flex gap-4"
             >
-              <Link href="/live">
+              <Link href="/demo/variant-b/sermons">
                 <Button
                   size="lg"
                   className="bg-primary-500 hover:bg-primary-600 group"
@@ -269,7 +269,7 @@ export default function VariantBPage() {
                   예배 영상
                 </Button>
               </Link>
-              <Link href="/about">
+              <Link href="/demo/variant-b/about">
                 <Button
                   size="lg"
                   variant="outline"
@@ -417,21 +417,21 @@ export default function VariantBPage() {
               title: "예배 시간",
               content: "주일 7:00 / 9:30 / 11:30",
               color: "bg-blue-500",
-              link: "/worship",
+              link: "/demo/variant-b/worship",
             },
             {
               icon: MapPin,
               title: "오시는 길",
               content: "서울시 구로구 신도림로 56-24",
               color: "bg-emerald-500",
-              link: "/about#location",
+              link: "/demo/variant-b/about#location",
             },
             {
               icon: Phone,
               title: "연락처",
               content: "070-7300-6200",
               color: "bg-amber-500",
-              link: "/contact",
+              link: "/demo/variant-b/newcomer",
             },
           ].map((item, i) => (
             <motion.div
@@ -537,7 +537,7 @@ export default function VariantBPage() {
       <Section background="white" padding="xl" aria-label="설교">
         <div className="flex items-end justify-between mb-10">
           <div>
-            <Badge className="mb-3 bg-primary-100 text-primary-600 hover:bg-primary-100">
+            <Badge className="mb-3 bg-primary-100 text-primary-600 hover:bg-primary-200">
               Sermons
             </Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-neutral-900">
@@ -545,7 +545,7 @@ export default function VariantBPage() {
             </h2>
             <p className="text-neutral-500 mt-2">말씀으로 함께 성장합니다</p>
           </div>
-          <Link href="/sermons">
+          <Link href="/demo/variant-b/sermons">
             <Button variant="outline" className="group">
               전체 보기
               <ArrowRight
@@ -680,7 +680,7 @@ export default function VariantBPage() {
                   교회 소식
                 </h2>
               </div>
-              <Link href="/news">
+              <Link href="/demo/variant-b/news">
                 <Button variant="ghost" size="sm">
                   전체 보기
                   <ArrowRight size={16} aria-hidden="true" />
@@ -761,9 +761,12 @@ export default function VariantBPage() {
               <h3 className="font-bold text-neutral-900 mb-4">바로가기</h3>
               <div className="space-y-2">
                 {[
-                  { label: "예배 안내", href: "/worship" },
-                  { label: "오시는 길", href: "/about#location" },
-                  { label: "교회 소개", href: "/about" },
+                  { label: "예배 안내", href: "/demo/variant-b/worship" },
+                  {
+                    label: "오시는 길",
+                    href: "/demo/variant-b/about#location",
+                  },
+                  { label: "교회 소개", href: "/demo/variant-b/about" },
                 ].map((link) => (
                   <Link
                     key={link.label}
