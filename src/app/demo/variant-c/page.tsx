@@ -1,13 +1,7 @@
 "use client";
 
-import {
-  motion,
-  AnimatePresence,
-  useScroll,
-  useTransform,
-  useReducedMotion,
-} from "framer-motion";
-import { useRef, useState, useCallback, type KeyboardEvent } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useState, useCallback, useRef, type KeyboardEvent } from "react";
 import {
   Play,
   ArrowRight,
@@ -45,7 +39,7 @@ const menuItems = [
     icon: BookOpen,
     label: "설교",
     description: "말씀 듣기",
-    href: "/sermons",
+    href: "/demo/variant-c/sermons",
     color: "bg-blue-500",
     hoverColor: "group-hover:bg-blue-600",
   },
@@ -53,7 +47,7 @@ const menuItems = [
     icon: Calendar,
     label: "예배안내",
     description: "시간/장소",
-    href: "/worship",
+    href: "/demo/variant-c/worship",
     color: "bg-emerald-500",
     hoverColor: "group-hover:bg-emerald-600",
   },
@@ -61,7 +55,7 @@ const menuItems = [
     icon: Users,
     label: "새가족",
     description: "환영합니다",
-    href: "/newcomer",
+    href: "/demo/variant-c/newcomer",
     color: "bg-violet-500",
     hoverColor: "group-hover:bg-violet-600",
   },
@@ -69,7 +63,7 @@ const menuItems = [
     icon: Heart,
     label: "교회소개",
     description: "성락교회",
-    href: "/about",
+    href: "/demo/variant-c/about",
     color: "bg-rose-500",
     hoverColor: "group-hover:bg-rose-600",
   },
@@ -113,25 +107,15 @@ const newcomerItems = [
 ];
 
 export default function VariantCPage() {
-  const containerRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [activeTab, setActiveTab] = useState<TabKey>("sermon");
   const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
 
   const prefersReducedMotion = useReducedMotion();
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  });
-
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
-
   const featuredSermon = initialSermons[0];
   const recentSermons = initialSermons.slice(0, 3);
   const notices = initialNotices.slice(0, 4);
-
-  const activeTabIndex = tabList.findIndex((t) => t.key === activeTab);
 
   const handleTabKeyDown = useCallback(
     (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
@@ -155,11 +139,20 @@ export default function VariantCPage() {
     : tabVariants;
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-neutral-50">
-      <Header />
+    <div className="min-h-screen bg-neutral-50">
+      <Header basePath="/demo/variant-c" />
+
+      {/* Skip Navigation */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:bg-white focus:text-primary-600 focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg focus:text-sm focus:font-medium"
+      >
+        본문 바로가기
+      </a>
 
       {/* Hero Section - Enhanced Split Layout */}
       <section
+        id="main-content"
         className="min-h-screen pt-16 md:pt-20"
         aria-label="히어로 - 성락교회 소개"
       >
@@ -199,13 +192,11 @@ export default function VariantCPage() {
               </motion.div>
 
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-neutral-900 mb-6 leading-tight">
-                Faith,
+                신실한 헌신,
                 <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-amber-500">
-                  a Relationship
+                  긍휼한 아낌
                 </span>
-                <br />
-                with the Lord
               </h1>
 
               <motion.p
@@ -216,7 +207,7 @@ export default function VariantCPage() {
                 }
                 className="text-lg text-neutral-600 mb-8 leading-relaxed"
               >
-                신실한 헌신, 긍휼한 아낌
+                Sincere Devotion, Compassionate Fellowship
                 <br />
                 성락교회에 오신 것을 환영합니다
               </motion.p>
@@ -229,7 +220,7 @@ export default function VariantCPage() {
                 }
                 className="flex flex-wrap gap-4 mb-12"
               >
-                <Link href="/live">
+                <Link href="/demo/variant-c/sermons">
                   <Button
                     size="lg"
                     className="bg-primary-500 hover:bg-primary-600 group shadow-lg shadow-primary-500/25"
@@ -242,7 +233,7 @@ export default function VariantCPage() {
                     실시간 예배
                   </Button>
                 </Link>
-                <Link href="/about">
+                <Link href="/demo/variant-c/about">
                   <Button
                     size="lg"
                     variant="outline"
@@ -278,7 +269,7 @@ export default function VariantCPage() {
                     >
                       <Link
                         href={item.href}
-                        className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-neutral-50 transition-all group relative min-h-[44px]"
+                        className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-neutral-50 transition-all group relative min-h-[44px] min-w-[44px]"
                       >
                         <motion.div
                           animate={
@@ -294,10 +285,10 @@ export default function VariantCPage() {
                           <item.icon size={24} aria-hidden="true" />
                         </motion.div>
                         <div className="text-center">
-                          <span className="text-sm font-semibold text-neutral-800 block">
+                          <span className="text-sm font-medium text-neutral-800 block">
                             {item.label}
                           </span>
-                          <span className="text-xs text-neutral-400">
+                          <span className="text-xs text-neutral-500">
                             {item.description}
                           </span>
                         </div>
@@ -455,7 +446,7 @@ export default function VariantCPage() {
 
       {/* Quick Info Bar */}
       <section
-        className="bg-neutral-900 text-white py-5"
+        className="bg-neutral-900 text-white py-4"
         aria-label="교회 기본 정보"
       >
         <Container>
@@ -571,7 +562,7 @@ export default function VariantCPage() {
                 }
                 className="text-center mt-10"
               >
-                <Link href="/sermons">
+                <Link href="/demo/variant-c/sermons">
                   <Button variant="outline" size="lg" className="group">
                     전체 설교 보기
                     <ArrowRight
@@ -656,7 +647,7 @@ export default function VariantCPage() {
                 }
                 className="text-center mt-10"
               >
-                <Link href="/worship">
+                <Link href="/demo/variant-c/worship">
                   <Button variant="outline" size="lg" className="group">
                     예배 안내 자세히 보기
                     <ArrowRight
@@ -676,15 +667,15 @@ export default function VariantCPage() {
       <Section background="gray" padding="xl" aria-label="교회 소식">
         <div className="flex items-end justify-between mb-10">
           <div>
-            <Badge className="mb-3 bg-neutral-200 text-neutral-600 hover:bg-neutral-200">
-              News
-            </Badge>
+            <p className="text-sm text-primary-500 font-medium mb-2 tracking-widest">
+              NEWS
+            </p>
             <h2 className="text-3xl md:text-4xl font-bold text-neutral-900">
               교회 소식
             </h2>
             <p className="text-neutral-500 mt-2">성락교회의 소식을 전합니다</p>
           </div>
-          <Link href="/news">
+          <Link href="/demo/variant-c/news">
             <Button variant="ghost" className="group">
               전체 보기
               <ArrowRight
@@ -723,10 +714,9 @@ export default function VariantCPage() {
             viewport={{ once: true }}
             transition={prefersReducedMotion ? { duration: 0 } : undefined}
           >
-            <Badge className="mb-4 bg-violet-100 text-violet-600 hover:bg-violet-100">
-              <Users size={12} className="mr-1" aria-hidden="true" />
-              Welcome
-            </Badge>
+            <p className="text-sm text-primary-500 font-medium mb-2 tracking-widest">
+              WELCOME
+            </p>
             <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-6">
               처음 오셨나요?
               <br />
@@ -734,7 +724,7 @@ export default function VariantCPage() {
                 환영합니다!
               </span>
             </h2>
-            <p className="text-neutral-600 leading-relaxed mb-6">
+            <p className="text-neutral-600 leading-relaxed mb-6 max-w-prose">
               성락교회는 여러분을 진심으로 환영합니다. 처음 방문하시는 분들을
               위한 안내를 준비했습니다. 부담 없이 문의해 주세요.
             </p>
@@ -757,7 +747,7 @@ export default function VariantCPage() {
                     className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors ${
                       item.done
                         ? "bg-primary-100 text-primary-500"
-                        : "bg-neutral-100 text-neutral-400"
+                        : "bg-neutral-100 text-neutral-500"
                     } group-hover:bg-primary-500 group-hover:text-white`}
                     aria-hidden="true"
                   >
@@ -770,7 +760,7 @@ export default function VariantCPage() {
               ))}
             </ul>
 
-            <Link href="/newcomer">
+            <Link href="/demo/variant-c/newcomer">
               <Button
                 size="lg"
                 className="group shadow-lg shadow-primary-500/25"
@@ -871,7 +861,7 @@ export default function VariantCPage() {
         </div>
       </Section>
 
-      <Footer />
+      <Footer basePath="/demo/variant-c" />
 
       {/* Back to Demo Selection */}
       <Link

@@ -1,0 +1,326 @@
+"use client";
+
+import { motion, useReducedMotion } from "framer-motion";
+import { Calendar, Clock, MapPin, Users, ArrowRight } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { Header } from "@/components/common/header";
+import { Footer } from "@/components/common/footer";
+import { Section } from "@/components/common/section";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { initialWorships } from "@/mocks/data/initial";
+
+const visitorInfoItems = [
+  {
+    icon: Clock,
+    title: "예배 시간",
+    description:
+      "예배 시작 10분 전까지 오시면 됩니다. 안내위원이 좌석을 안내해 드립니다.",
+    color: "bg-blue-500",
+    lightColor: "bg-blue-100",
+    textColor: "text-blue-500",
+  },
+  {
+    icon: MapPin,
+    title: "주차 안내",
+    description:
+      "교회 건물 지하 주차장을 이용하실 수 있습니다. 주차 공간이 제한적이니 대중교통 이용을 권장합니다.",
+    color: "bg-emerald-500",
+    lightColor: "bg-emerald-100",
+    textColor: "text-emerald-500",
+  },
+  {
+    icon: Users,
+    title: "새가족 안내",
+    description:
+      "처음 방문하신 분은 1층 안내 데스크에서 새가족 등록을 하실 수 있습니다.",
+    color: "bg-violet-500",
+    lightColor: "bg-violet-100",
+    textColor: "text-violet-500",
+  },
+];
+
+export default function WorshipPage() {
+  const prefersReducedMotion = useReducedMotion();
+
+  const sundayWorships = initialWorships.filter((w) => w.day === "sunday");
+  const weekdayWorships = initialWorships.filter((w) => w.day !== "sunday");
+
+  return (
+    <div className="min-h-screen bg-neutral-50">
+      <Header basePath="/demo/variant-c" />
+
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:bg-white focus:text-primary-600 focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg focus:text-sm focus:font-medium"
+      >
+        본문 바로가기
+      </a>
+
+      {/* Hero Banner */}
+      <section
+        id="main-content"
+        className="relative h-[40vh] min-h-[300px] pt-16 md:pt-20"
+        aria-label="예배안내 히어로"
+      >
+        <Image
+          src="https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=2070"
+          alt="예배당에서 찬양하는 모습"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div
+          className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20"
+          aria-hidden="true"
+        />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <motion.div
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={
+              prefersReducedMotion ? { duration: 0 } : { duration: 0.6 }
+            }
+            className="text-center"
+          >
+            <p className="text-sm text-primary-400 font-medium mb-3 tracking-widest">
+              WORSHIP
+            </p>
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
+              예배안내
+            </h1>
+            <p className="text-neutral-200 text-lg">하나님을 예배하는 시간</p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Sunday Worship */}
+      <Section background="white" padding="xl" aria-label="주일예배 안내">
+        <div className="text-center mb-10">
+          <p className="text-sm text-primary-500 font-medium mb-2 tracking-widest">
+            SUNDAY SERVICE
+          </p>
+          <h2 className="text-3xl md:text-4xl font-bold text-neutral-900">
+            주일예배
+          </h2>
+          <p className="text-neutral-500 mt-2">
+            매 주일 세 번의 예배를 드립니다
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {sundayWorships.map((worship, i) => (
+            <motion.div
+              key={worship.id}
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={
+                prefersReducedMotion ? { duration: 0 } : { delay: i * 0.1 }
+              }
+              whileHover={prefersReducedMotion ? {} : { y: -5, scale: 1.02 }}
+            >
+              <Card className="hover:shadow-xl transition-all duration-300 overflow-hidden group border-0 shadow-md">
+                <CardContent className="p-6 relative">
+                  <div
+                    className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary-100 to-transparent rounded-bl-full opacity-50"
+                    aria-hidden="true"
+                  />
+                  <div className="flex items-start justify-between relative z-10">
+                    <div>
+                      <Badge
+                        variant="outline"
+                        className="mb-2 text-xs border-primary-200 text-primary-600"
+                      >
+                        {worship.location}
+                      </Badge>
+                      <h3 className="font-bold text-neutral-900 text-lg mb-2 group-hover:text-primary-600 transition-colors">
+                        {worship.name}
+                      </h3>
+                      <p className="text-3xl font-bold text-primary-500">
+                        {worship.time}
+                      </p>
+                      {worship.description && (
+                        <p className="text-sm text-neutral-500 mt-2">
+                          {worship.description}
+                        </p>
+                      )}
+                    </div>
+                    <div
+                      className="w-12 h-12 rounded-xl bg-primary-100 flex items-center justify-center group-hover:bg-primary-500 group-hover:text-white transition-all"
+                      aria-hidden="true"
+                    >
+                      <Calendar
+                        className="text-primary-500 group-hover:text-white transition-colors"
+                        size={22}
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </Section>
+
+      {/* Weekday Worship */}
+      <Section background="gray" padding="xl" aria-label="주중예배 안내">
+        <div className="text-center mb-10">
+          <p className="text-sm text-primary-500 font-medium mb-2 tracking-widest">
+            WEEKDAY SERVICE
+          </p>
+          <h2 className="text-3xl md:text-4xl font-bold text-neutral-900">
+            주중예배
+          </h2>
+          <p className="text-neutral-500 mt-2">주중에도 함께 예배드립니다</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          {weekdayWorships.map((worship, i) => (
+            <motion.div
+              key={worship.id}
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={
+                prefersReducedMotion ? { duration: 0 } : { delay: i * 0.1 }
+              }
+              whileHover={prefersReducedMotion ? {} : { y: -5, scale: 1.02 }}
+            >
+              <Card className="hover:shadow-xl transition-all duration-300 overflow-hidden group border-0 shadow-md">
+                <CardContent className="p-6 relative">
+                  <div
+                    className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary-100 to-transparent rounded-bl-full opacity-50"
+                    aria-hidden="true"
+                  />
+                  <div className="flex items-start justify-between relative z-10">
+                    <div>
+                      <Badge
+                        variant="outline"
+                        className="mb-2 text-xs border-primary-200 text-primary-600"
+                      >
+                        {worship.location}
+                      </Badge>
+                      <h3 className="font-bold text-neutral-900 text-lg mb-2 group-hover:text-primary-600 transition-colors">
+                        {worship.name}
+                      </h3>
+                      <p className="text-3xl font-bold text-primary-500">
+                        {worship.time}
+                      </p>
+                      {worship.description && (
+                        <p className="text-sm text-neutral-500 mt-2">
+                          {worship.description}
+                        </p>
+                      )}
+                    </div>
+                    <div
+                      className="w-12 h-12 rounded-xl bg-primary-100 flex items-center justify-center group-hover:bg-primary-500 group-hover:text-white transition-all"
+                      aria-hidden="true"
+                    >
+                      <Calendar
+                        className="text-primary-500 group-hover:text-white transition-colors"
+                        size={22}
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </Section>
+
+      {/* Visitor Info */}
+      <Section background="white" padding="xl" aria-label="방문자 안내">
+        <div className="text-center mb-10">
+          <p className="text-sm text-primary-500 font-medium mb-2 tracking-widest">
+            FOR VISITORS
+          </p>
+          <h2 className="text-3xl md:text-4xl font-bold text-neutral-900">
+            처음{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-amber-500">
+              방문하시나요?
+            </span>
+          </h2>
+          <p className="text-neutral-500 mt-2">
+            편안하게 예배에 참여하실 수 있도록 안내해 드립니다
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {visitorInfoItems.map((item, i) => (
+            <motion.div
+              key={item.title}
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={
+                prefersReducedMotion ? { duration: 0 } : { delay: i * 0.1 }
+              }
+            >
+              <Card className="hover:shadow-xl transition-all duration-300 overflow-hidden group border-0 shadow-md h-full">
+                <CardContent className="p-6 relative">
+                  <div
+                    className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary-100 to-transparent rounded-bl-full opacity-50"
+                    aria-hidden="true"
+                  />
+                  <div className="relative z-10">
+                    <div
+                      className={`w-14 h-14 rounded-2xl ${item.lightColor} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
+                      aria-hidden="true"
+                    >
+                      <item.icon className={item.textColor} size={28} />
+                    </div>
+                    <h3 className="font-bold text-neutral-900 text-lg mb-2">
+                      {item.title}
+                    </h3>
+                    <p className="text-neutral-600 text-sm leading-relaxed">
+                      {item.description}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div
+          initial={prefersReducedMotion ? false : { opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={prefersReducedMotion ? { duration: 0 } : { delay: 0.4 }}
+          className="text-center mt-10"
+        >
+          <Link href="/demo/variant-c/newcomer">
+            <Button size="lg" className="group shadow-lg shadow-primary-500/25">
+              새가족 안내 보기
+              <ArrowRight
+                size={16}
+                className="group-hover:translate-x-1 transition-transform"
+                aria-hidden="true"
+              />
+            </Button>
+          </Link>
+        </motion.div>
+      </Section>
+
+      <Footer basePath="/demo/variant-c" />
+
+      <Link
+        href="/"
+        className="fixed bottom-6 right-6 z-50 bg-neutral-900 text-white px-4 py-2 rounded-full shadow-lg hover:bg-neutral-800 transition-colors text-sm group min-h-[44px] flex items-center"
+        aria-label="시안 선택 페이지로 돌아가기"
+      >
+        <span
+          className="group-hover:-translate-x-1 inline-block transition-transform"
+          aria-hidden="true"
+        >
+          ←
+        </span>{" "}
+        시안 선택
+      </Link>
+    </div>
+  );
+}
