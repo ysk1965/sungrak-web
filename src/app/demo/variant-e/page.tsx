@@ -14,7 +14,6 @@ import {
   Clock,
   MapPin,
   Phone,
-  ChevronRight,
   Minus,
   Quote,
 } from "lucide-react";
@@ -57,8 +56,17 @@ export default function VariantEPage() {
     <div className="min-h-screen bg-white">
       <Header />
 
+      {/* Skip Navigation */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:bg-white focus:text-primary-600 focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg focus:text-sm focus:font-medium"
+      >
+        본문 바로가기
+      </a>
+
       {/* Hero - Minimal Text Focus Enhanced */}
       <section
+        id="main-content"
         ref={heroRef}
         className="min-h-screen pt-20 flex flex-col relative overflow-hidden"
       >
@@ -126,7 +134,7 @@ export default function VariantEPage() {
                 }
                 className="mb-12"
               >
-                <p className="text-xl md:text-2xl text-neutral-400 font-light tracking-wide">
+                <p className="text-xl md:text-2xl text-neutral-500 font-light tracking-wide">
                   Sincere Devotion, Compassionate Fellowship
                 </p>
               </motion.div>
@@ -141,27 +149,27 @@ export default function VariantEPage() {
                 }
                 className="flex flex-col sm:flex-row gap-4 justify-center"
               >
-                <Link href="/about">
+                <Link href="/live">
                   <Button
                     size="lg"
                     className="min-h-[44px] min-w-[180px] h-14 text-base group shadow-lg shadow-primary-500/20"
                   >
-                    교회 소개
-                    <ArrowRight
-                      size={18}
+                    <Play
+                      size={20}
                       aria-hidden="true"
-                      className="group-hover:translate-x-1 transition-transform motion-reduce:transition-none"
+                      className="group-hover:scale-110 transition-transform motion-reduce:transition-none"
                     />
+                    실시간 예배
                   </Button>
                 </Link>
-                <Link href="/newcomer">
+                <Link href="/about">
                   <Button
                     size="lg"
                     variant="outline"
                     className="min-h-[44px] min-w-[180px] h-14 text-base group border-2"
                   >
-                    새가족 안내
-                    <ChevronRight
+                    교회 소개
+                    <ArrowRight
                       size={18}
                       aria-hidden="true"
                       className="group-hover:translate-x-1 transition-transform motion-reduce:transition-none"
@@ -186,7 +194,7 @@ export default function VariantEPage() {
             transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
             className="flex flex-col items-center gap-3"
           >
-            <span className="text-xs tracking-[0.2em] text-neutral-400 uppercase">
+            <span className="text-xs tracking-[0.2em] text-neutral-500 uppercase">
               Scroll to explore
             </span>
             <div className="w-px h-16 bg-gradient-to-b from-neutral-300 to-transparent" />
@@ -284,19 +292,19 @@ export default function VariantEPage() {
                 transition={
                   shouldReduceMotion ? { duration: 0 } : { delay: i * 0.1 }
                 }
-                className="text-center group cursor-pointer"
+                className="text-center group cursor-pointer p-4 min-h-[44px] rounded-xl"
               >
                 <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-neutral-100 flex items-center justify-center group-hover:bg-primary-100 transition-colors motion-reduce:transition-none">
                   <item.icon
                     size={24}
                     aria-hidden="true"
-                    className="text-neutral-400 group-hover:text-primary-500 transition-colors motion-reduce:transition-none"
+                    className="text-neutral-500 group-hover:text-primary-500 transition-colors motion-reduce:transition-none"
                   />
                 </div>
-                <p className="text-sm text-neutral-400 mb-2 tracking-wide uppercase">
+                <p className="text-sm text-neutral-500 mb-2 tracking-wide uppercase">
                   {item.label}
                 </p>
-                <p className="text-lg font-semibold text-neutral-900 group-hover:text-primary-600 transition-colors motion-reduce:transition-none">
+                <p className="text-lg font-medium text-neutral-900 group-hover:text-primary-600 transition-colors motion-reduce:transition-none">
                   {item.value}
                 </p>
               </motion.div>
@@ -395,7 +403,7 @@ export default function VariantEPage() {
                 성락교회
               </h2>
 
-              <div className="space-y-6 mb-10">
+              <div className="space-y-6 mb-10 max-w-prose">
                 <motion.p
                   initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -523,7 +531,7 @@ export default function VariantEPage() {
                 NEWS
               </p>
               <h2 className="text-4xl md:text-5xl font-bold text-neutral-900">
-                소식
+                교회 소식
               </h2>
             </div>
             <Link href="/news">

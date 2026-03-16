@@ -223,6 +223,14 @@ export default function VariantGPage() {
       {/* Header - Fixed overlay inside snap container */}
       <Header variant="transparent" />
 
+      {/* Skip Navigation */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:bg-white focus:text-primary-600 focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg focus:text-sm focus:font-medium"
+      >
+        본문 바로가기
+      </a>
+
       {/* ===== Side Dot Navigation (role="tablist") ===== */}
       <nav
         role="tablist"
@@ -280,6 +288,7 @@ export default function VariantGPage() {
         aria-label="환영"
         className="h-screen snap-start snap-always flex items-center justify-center relative overflow-hidden bg-gradient-to-b from-neutral-900 via-slate-900 to-neutral-900"
       >
+        <span id="main-content" className="absolute" aria-hidden="true" />
         {/* Background Image */}
         <motion.div
           {...(shouldReduceMotion
@@ -336,7 +345,7 @@ export default function VariantGPage() {
               { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } },
               0.6,
             )}
-            className="text-2xl md:text-3xl lg:text-4xl font-semibold mb-4"
+            className="text-2xl md:text-3xl lg:text-4xl font-medium mb-4"
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-amber-300">
               신실한 헌신, 긍휼한 아낌
@@ -360,13 +369,13 @@ export default function VariantGPage() {
             )}
             className="flex flex-wrap items-center justify-center gap-4"
           >
-            <Link href="/sermons">
+            <Link href="/live">
               <Button
                 size="lg"
                 className="bg-primary-500 hover:bg-primary-600 text-white shadow-lg shadow-primary-500/25 h-14 px-8 text-base"
               >
                 <Play size={18} className="mr-2" aria-hidden="true" />
-                예배 실황
+                실시간 예배
               </Button>
             </Link>
             <Link href="/about">
@@ -387,7 +396,7 @@ export default function VariantGPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.5 }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40"
+            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/60"
             aria-hidden="true"
           >
             <span className="text-xs tracking-[0.3em] uppercase">Scroll</span>
@@ -508,7 +517,7 @@ export default function VariantGPage() {
                     <h3 className="text-sm font-medium text-white/80 group-hover/item:text-primary-400 transition-colors line-clamp-1">
                       {sermon.title}
                     </h3>
-                    <p className="text-xs text-white/40 mt-1">
+                    <p className="text-xs text-white/60 mt-1">
                       {formatDate(sermon.publishedAt)}
                     </p>
                   </motion.div>
@@ -560,7 +569,7 @@ export default function VariantGPage() {
               { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } },
               0.4,
             )}
-            className="text-lg text-white/60 text-center leading-relaxed mt-6 max-w-2xl mx-auto"
+            className="text-lg text-white/60 text-center leading-relaxed mt-6 max-w-prose mx-auto"
           >
             {churchInfo.vision.content}
           </motion.p>
@@ -636,17 +645,16 @@ export default function VariantGPage() {
                 whileHover={
                   shouldReduceMotion ? undefined : { y: -4, scale: 1.02 }
                 }
-                className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 transition-colors hover:bg-white/10 cursor-pointer"
+                className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 transition-colors hover:bg-white/10 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                tabIndex={0}
               >
-                <h3 className="font-semibold text-white mb-2">
-                  {worship.name}
-                </h3>
+                <h3 className="font-medium text-white mb-2">{worship.name}</h3>
                 <p className="text-2xl font-bold text-primary-400 mb-1">
                   {worship.time}
                 </p>
-                <p className="text-white/50 text-sm">{worship.location}</p>
+                <p className="text-white/60 text-sm">{worship.location}</p>
                 {worship.description && (
-                  <p className="text-white/40 text-xs mt-2">
+                  <p className="text-white/60 text-xs mt-2">
                     {worship.description}
                   </p>
                 )}
@@ -742,7 +750,7 @@ export default function VariantGPage() {
             <Link href="/newcomer">
               <Button
                 size="lg"
-                className="bg-white text-primary-600 hover:bg-white/90 shadow-xl h-14 px-10 text-base font-semibold group"
+                className="bg-white text-primary-600 hover:bg-white/90 shadow-xl h-14 px-10 text-base font-medium group"
               >
                 새가족 안내
                 <ArrowRight
@@ -807,7 +815,8 @@ export default function VariantGPage() {
                     i * 0.15,
                   )}
                   whileHover={shouldReduceMotion ? undefined : { y: -4 }}
-                  className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-5 cursor-pointer group transition-colors hover:bg-white/10"
+                  className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-5 cursor-pointer group transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                  tabIndex={0}
                 >
                   <div className="flex items-center gap-2 mb-3">
                     <Badge
@@ -825,7 +834,7 @@ export default function VariantGPage() {
                   <h3 className="font-medium text-white group-hover:text-primary-400 transition-colors line-clamp-2 mb-2">
                     {notice.title}
                   </h3>
-                  <p className="text-white/40 text-sm">
+                  <p className="text-white/60 text-sm">
                     <time dateTime={notice.createdAt}>
                       {formatShortDate(notice.createdAt)}
                     </time>
@@ -841,9 +850,9 @@ export default function VariantGPage() {
           <Container>
             <div className="h-px bg-white/10 mb-6" aria-hidden="true" />
             <div className="text-center space-y-2">
-              <p className="text-white/50 text-sm font-medium">성락교회</p>
+              <p className="text-white/60 text-sm font-medium">성락교회</p>
               <address className="not-italic">
-                <div className="flex flex-wrap items-center justify-center gap-4 text-white/40 text-xs">
+                <div className="flex flex-wrap items-center justify-center gap-4 text-white/60 text-xs">
                   <span className="inline-flex items-center gap-1">
                     <MapPin size={12} aria-hidden="true" />
                     {churchInfo.location.address}
@@ -854,7 +863,7 @@ export default function VariantGPage() {
                   </span>
                 </div>
               </address>
-              <p className="text-white/30 text-xs">
+              <p className="text-white/50 text-xs">
                 &copy; {new Date().getFullYear()} 성락교회. All rights reserved.
               </p>
             </div>

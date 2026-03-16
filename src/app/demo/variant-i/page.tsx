@@ -11,7 +11,7 @@ import { useRef, useCallback, useId } from "react";
 import {
   ArrowRight,
   ArrowLeft,
-  ChevronRight,
+  Play,
   Clock,
   MapPin,
   Users,
@@ -157,8 +157,17 @@ export default function VariantIPage() {
 
       <Header />
 
+      {/* Skip Navigation */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:bg-white focus:text-primary-600 focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg focus:text-sm focus:font-medium"
+      >
+        본문 바로가기
+      </a>
+
       {/* ===== Editorial Hero (80vh) ===== */}
       <section
+        id="main-content"
         ref={heroRef}
         aria-label="성락교회 메인 소개"
         className="relative min-h-[80vh] bg-[#FAF8F3] mt-16 md:mt-20 overflow-hidden"
@@ -207,27 +216,27 @@ export default function VariantIPage() {
                 animate="visible"
                 className="flex flex-col sm:flex-row gap-4"
               >
-                <Link href="/about">
+                <Link href="/live">
                   <Button
                     size="lg"
                     className="min-w-[160px] h-13 text-base group shadow-lg shadow-primary-500/20"
                   >
-                    교회 소개
-                    <ArrowRight
-                      size={18}
+                    <Play
+                      size={20}
                       aria-hidden="true"
-                      className="group-hover:translate-x-1 transition-transform"
+                      className="group-hover:scale-110 transition-transform"
                     />
+                    실시간 예배
                   </Button>
                 </Link>
-                <Link href="/newcomer">
+                <Link href="/about">
                   <Button
                     size="lg"
                     variant="outline"
                     className="min-w-[160px] h-13 text-base group border-2"
                   >
-                    새가족 안내
-                    <ChevronRight
+                    교회 소개
+                    <ArrowRight
                       size={18}
                       aria-hidden="true"
                       className="group-hover:translate-x-1 transition-transform"
@@ -313,7 +322,7 @@ export default function VariantIPage() {
               <button
                 type="button"
                 onClick={() => scrollCarousel("left")}
-                className="w-10 h-10 rounded-full border border-neutral-200 flex items-center justify-center hover:bg-neutral-50 hover:border-neutral-300 transition-colors"
+                className="w-11 h-11 rounded-full border border-neutral-200 flex items-center justify-center hover:bg-neutral-50 hover:border-neutral-300 transition-colors focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
                 aria-label="이전 설교로 이동"
                 aria-controls={`carousel-${carouselId}`}
               >
@@ -326,7 +335,7 @@ export default function VariantIPage() {
               <button
                 type="button"
                 onClick={() => scrollCarousel("right")}
-                className="w-10 h-10 rounded-full border border-neutral-200 flex items-center justify-center hover:bg-neutral-50 hover:border-neutral-300 transition-colors"
+                className="w-11 h-11 rounded-full border border-neutral-200 flex items-center justify-center hover:bg-neutral-50 hover:border-neutral-300 transition-colors focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
                 aria-label="다음 설교로 이동"
                 aria-controls={`carousel-${carouselId}`}
               >
@@ -545,7 +554,7 @@ export default function VariantIPage() {
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
-                    className="text-neutral-600 leading-relaxed text-lg"
+                    className="text-neutral-600 leading-relaxed text-lg max-w-prose"
                   >
                     {paragraph}
                   </motion.p>
@@ -626,7 +635,7 @@ export default function VariantIPage() {
                     viewport={{ once: true }}
                     className="border-l-2 border-primary-500 pl-4 py-1 group hover:border-primary-400 transition-colors"
                   >
-                    <h3 className="font-semibold text-neutral-900 text-lg group-hover:text-primary-600 transition-colors">
+                    <h3 className="font-medium text-neutral-900 text-lg group-hover:text-primary-600 transition-colors">
                       {worship.name}
                     </h3>
                     <div className="flex items-center gap-3 mt-1 text-neutral-500">
@@ -818,7 +827,7 @@ export default function VariantIPage() {
       {/* Back to Demo Selection */}
       <Link
         href="/"
-        className="fixed bottom-6 right-6 z-50 bg-neutral-900 text-white px-4 py-2 rounded-full shadow-lg hover:bg-neutral-800 transition-colors text-sm group"
+        className="fixed bottom-6 right-6 z-50 bg-neutral-900 text-white px-4 py-2 rounded-full shadow-lg hover:bg-neutral-800 transition-colors text-sm group min-h-[44px] inline-flex items-center"
         aria-label="시안 선택 페이지로 돌아가기"
       >
         <span
