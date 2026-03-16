@@ -5,14 +5,12 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default:
-          "bg-primary-500 text-white shadow hover:bg-primary-600",
-        destructive:
-          "bg-red-500 text-white shadow-sm hover:bg-red-600",
+        default: "bg-primary-500 text-white shadow hover:bg-primary-600",
+        destructive: "bg-red-500 text-white shadow-sm hover:bg-red-600",
         outline:
           "border border-neutral-200 bg-white shadow-sm hover:bg-neutral-100 hover:text-neutral-900",
         secondary:
@@ -21,21 +19,22 @@ const buttonVariants = cva(
         link: "text-primary-500 underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-9 px-4 py-2",
-        sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-10 rounded-md px-8",
-        icon: "h-9 w-9",
+        default: "h-9 min-h-[44px] min-w-[44px] px-4 py-2",
+        sm: "h-8 min-h-[44px] min-w-[44px] rounded-md px-3 text-xs",
+        lg: "h-10 min-h-[44px] min-w-[44px] rounded-md px-8",
+        icon: "h-9 w-9 min-h-[44px] min-w-[44px]",
       },
     },
     defaultVariants: {
       variant: "default",
       size: "default",
     },
-  }
+  },
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
@@ -50,7 +49,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       />
     );
-  }
+  },
 );
 Button.displayName = "Button";
 

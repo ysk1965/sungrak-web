@@ -73,3 +73,30 @@ export const transitions = {
   bounce: { type: "spring", stiffness: 400, damping: 10 },
   slow: { duration: 0.8, ease: "easeOut" },
 };
+
+// -----------------------------------------------------------------------
+// Reduced Motion 유틸리티
+// prefers-reduced-motion: reduce 환경에서 사용할 즉시 표시용 variants
+// -----------------------------------------------------------------------
+
+/**
+ * 모든 상태를 opacity:1 / transform 없음으로 고정하는 reduced motion용 variants.
+ * initial → animate가 즉시 최종값으로 표시되며 exit도 즉시 사라집니다.
+ */
+export const reducedMotionVariants: Variants = {
+  initial: { opacity: 1 },
+  animate: { opacity: 1, transition: { duration: 0 } },
+  exit: { opacity: 1, transition: { duration: 0 } },
+};
+
+/**
+ * 스태거 컨테이너 reduced motion 버전.
+ * staggerChildren / delayChildren을 제거하여 자식이 즉시 표시됩니다.
+ */
+export const reducedMotionStaggerContainer: Variants = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0, delayChildren: 0 } },
+};
+
+/** duration: 0 트랜지션 — reduced motion 시 transition prop 오버라이드에 사용 */
+export const instantTransition = { duration: 0 };

@@ -1,7 +1,13 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+  type Variants,
+} from "framer-motion";
+import { useRef, useCallback, useId } from "react";
 import {
   ArrowRight,
   ArrowLeft,
@@ -31,19 +37,86 @@ const notices = initialNotices.slice(0, 3);
 const worships = initialWorships;
 const churchInfo = initialChurchInfo;
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Animation variant factories
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Fade-in-up variant for mount animations (initial → animate) */
+const makeFadeInUp = (
+  yOffset: number,
+  delay: number,
+  duration: number,
+  reduced: boolean | null,
+): Variants => ({
+  hidden: reduced ? { opacity: 1 } : { opacity: 0, y: yOffset },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: reduced ? { duration: 0 } : { duration, delay },
+  },
+});
+
+/** Slide-in-x variant for scroll-triggered animations */
+const makeFadeInX = (
+  xOffset: number,
+  delay: number,
+  duration: number,
+  reduced: boolean | null,
+): Variants => ({
+  hidden: reduced ? { opacity: 1 } : { opacity: 0, x: xOffset },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: reduced ? { duration: 0 } : { duration, delay },
+  },
+});
+
+/** Scale + fade variant */
+const makeScaleFadeIn = (
+  delay: number,
+  duration: number,
+  reduced: boolean | null,
+): Variants => ({
+  hidden: reduced ? { opacity: 1 } : { opacity: 0, scale: 0.5 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: reduced ? { duration: 0 } : { duration, delay },
+  },
+});
+
+/** Fade-only variant */
+const makeFadeIn = (delay: number, reduced: boolean | null): Variants => ({
+  hidden: reduced ? { opacity: 1 } : { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: reduced ? { duration: 0 } : { duration: 0.6, delay },
+  },
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Page component
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function VariantIPage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+  const carouselId = useId();
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
   });
 
-  const heroTextY = useTransform(scrollYProgress, [0, 1], [0, 60]);
-  const heroImageX = useTransform(scrollYProgress, [0, 1], [0, 40]);
+  // useTransform hooks must be called unconditionally.
+  // Pass undefined to motion.div style props when reduced motion is preferred.
+  const heroTextYRaw = useTransform(scrollYProgress, [0, 1], [0, 60]);
+  const heroImageXRaw = useTransform(scrollYProgress, [0, 1], [0, 40]);
+  const heroTextY = prefersReducedMotion ? undefined : heroTextYRaw;
+  const heroImageX = prefersReducedMotion ? undefined : heroImageXRaw;
 
-  const scrollCarousel = (direction: "left" | "right") => {
+  const scrollCarousel = useCallback((direction: "left" | "right") => {
     if (scrollContainerRef.current) {
       const scrollAmount = 400;
       scrollContainerRef.current.scrollBy({
@@ -51,19 +124,33 @@ export default function VariantIPage() {
         behavior: "smooth",
       });
     }
-  };
+  }, []);
+
+  /** Keyboard handler for carousel: ArrowLeft / ArrowRight scrolls the track */
+  const handleCarouselKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        scrollCarousel("left");
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        scrollCarousel("right");
+      }
+    },
+    [scrollCarousel],
+  );
 
   const greetingParagraphs = churchInfo.greeting.content.split("\n\n");
+  const rm = prefersReducedMotion; // shorthand
 
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
-      {/* Paper Texture Overlay */}
+      {/* Paper Texture Overlay — purely decorative */}
       <div
-        className="fixed inset-0 pointer-events-none z-[100]"
+        aria-hidden="true"
+        className="fixed inset-0 pointer-events-none z-[100] opacity-[0.02] bg-repeat"
         style={{
-          opacity: 0.02,
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-          backgroundRepeat: "repeat",
           backgroundSize: "256px 256px",
         }}
       />
@@ -73,6 +160,7 @@ export default function VariantIPage() {
       {/* ===== Editorial Hero (80vh) ===== */}
       <section
         ref={heroRef}
+        aria-label="성락교회 메인 소개"
         className="relative min-h-[80vh] bg-[#FAF8F3] mt-16 md:mt-20 overflow-hidden"
       >
         <Container size="xl" className="h-full">
@@ -83,18 +171,18 @@ export default function VariantIPage() {
               className="lg:col-span-3 order-2 lg:order-1"
             >
               <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
+                variants={makeFadeInUp(20, 0, 0.6, rm)}
+                initial="hidden"
+                animate="visible"
                 className="text-sm text-primary-500 font-medium tracking-[0.3em] uppercase mb-6"
               >
                 SUNGRAK CHURCH
               </motion.p>
 
               <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.1 }}
+                variants={makeFadeInUp(30, 0.1, 0.8, rm)}
+                initial="hidden"
+                animate="visible"
                 className="text-5xl md:text-6xl lg:text-7xl font-bold text-neutral-900 leading-tight mb-6"
               >
                 신실한 헌신,
@@ -105,18 +193,18 @@ export default function VariantIPage() {
               </motion.h1>
 
               <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
+                variants={makeFadeInUp(20, 0.2, 0.6, rm)}
+                initial="hidden"
+                animate="visible"
                 className="text-lg text-neutral-500 mb-10 tracking-wide"
               >
                 Sincere Devotion, Compassionate Fellowship
               </motion.p>
 
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
+                variants={makeFadeInUp(20, 0.3, 0.6, rm)}
+                initial="hidden"
+                animate="visible"
                 className="flex flex-col sm:flex-row gap-4"
               >
                 <Link href="/about">
@@ -127,6 +215,7 @@ export default function VariantIPage() {
                     교회 소개
                     <ArrowRight
                       size={18}
+                      aria-hidden="true"
                       className="group-hover:translate-x-1 transition-transform"
                     />
                   </Button>
@@ -140,6 +229,7 @@ export default function VariantIPage() {
                     새가족 안내
                     <ChevronRight
                       size={18}
+                      aria-hidden="true"
                       className="group-hover:translate-x-1 transition-transform"
                     />
                   </Button>
@@ -153,45 +243,65 @@ export default function VariantIPage() {
               className="lg:col-span-2 order-1 lg:order-2 relative"
             >
               <motion.div
-                initial={{ opacity: 0, x: 60, rotate: 4 }}
-                animate={{ opacity: 1, x: 0, rotate: 2 }}
-                transition={{ duration: 1, delay: 0.2 }}
+                variants={
+                  rm
+                    ? { hidden: { opacity: 1 }, visible: { opacity: 1 } }
+                    : {
+                        hidden: { opacity: 0, x: 60, rotate: 4 },
+                        visible: {
+                          opacity: 1,
+                          x: 0,
+                          rotate: 2,
+                          transition: { duration: 1, delay: 0.2 },
+                        },
+                      }
+                }
+                initial="hidden"
+                animate="visible"
                 className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl transform rotate-2"
               >
                 <Image
                   src="https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=2073"
-                  alt="Church"
+                  alt="성락교회 예배당 외관"
                   fill
                   className="object-cover"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"
+                />
               </motion.div>
 
               {/* Decorative element behind image */}
-              <div className="absolute -bottom-4 -left-4 w-full h-full rounded-2xl border-2 border-primary-200 -z-10 transform -rotate-1" />
+              <div
+                aria-hidden="true"
+                className="absolute -bottom-4 -left-4 w-full h-full rounded-2xl border-2 border-primary-200 -z-10 transform -rotate-1"
+              />
             </motion.div>
           </div>
         </Container>
       </section>
 
       {/* ===== Sermon Horizontal Carousel ===== */}
-      <section className="bg-white py-20">
+      <section aria-label="최신 설교" className="bg-white py-20">
         <Container size="xl">
           {/* Header row */}
           <div className="flex items-end justify-between mb-10">
             <div>
               <motion.p
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                variants={makeFadeInX(-20, 0, 0.5, rm)}
+                initial="hidden"
+                whileInView="visible"
                 viewport={{ once: true }}
                 className="text-sm text-primary-500 font-medium tracking-[0.3em] uppercase mb-2"
               >
                 SERMONS
               </motion.p>
               <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                variants={makeFadeInUp(20, 0, 0.6, rm)}
+                initial="hidden"
+                whileInView="visible"
                 viewport={{ once: true }}
                 className="text-3xl md:text-4xl font-bold text-neutral-900"
               >
@@ -201,24 +311,37 @@ export default function VariantIPage() {
             <div className="flex items-center gap-3">
               {/* Scroll arrows */}
               <button
+                type="button"
                 onClick={() => scrollCarousel("left")}
                 className="w-10 h-10 rounded-full border border-neutral-200 flex items-center justify-center hover:bg-neutral-50 hover:border-neutral-300 transition-colors"
-                aria-label="이전 설교"
+                aria-label="이전 설교로 이동"
+                aria-controls={`carousel-${carouselId}`}
               >
-                <ArrowLeft size={18} className="text-neutral-600" />
+                <ArrowLeft
+                  size={18}
+                  aria-hidden="true"
+                  className="text-neutral-600"
+                />
               </button>
               <button
+                type="button"
                 onClick={() => scrollCarousel("right")}
                 className="w-10 h-10 rounded-full border border-neutral-200 flex items-center justify-center hover:bg-neutral-50 hover:border-neutral-300 transition-colors"
-                aria-label="다음 설교"
+                aria-label="다음 설교로 이동"
+                aria-controls={`carousel-${carouselId}`}
               >
-                <ArrowRight size={18} className="text-neutral-600" />
+                <ArrowRight
+                  size={18}
+                  aria-hidden="true"
+                  className="text-neutral-600"
+                />
               </button>
               <Link href="/sermons" className="hidden sm:block">
                 <Button variant="ghost" className="group text-base">
                   전체 보기
                   <ArrowRight
                     size={18}
+                    aria-hidden="true"
                     className="group-hover:translate-x-1 transition-transform"
                   />
                 </Button>
@@ -227,27 +350,36 @@ export default function VariantIPage() {
           </div>
         </Container>
 
-        {/* Horizontal scroll container */}
-        <div className="relative">
+        {/* Horizontal scroll container — carousel landmark */}
+        <div
+          role="region"
+          aria-roledescription="carousel"
+          aria-label="설교 목록"
+        >
           <div
+            id={`carousel-${carouselId}`}
             ref={scrollContainerRef}
-            className="flex gap-6 overflow-x-auto pb-4 px-4 sm:px-6 lg:px-8 snap-x snap-mandatory"
-            style={{
-              scrollbarWidth: "none",
-              msOverflowStyle: "none",
-              WebkitOverflowScrolling: "touch",
-            }}
+            tabIndex={0}
+            onKeyDown={handleCarouselKeyDown}
+            className="flex gap-6 overflow-x-auto pb-4 px-4 sm:px-6 lg:px-8 snap-x snap-mandatory scrollbar-hide focus-visible:outline-2 focus-visible:outline-primary-500 focus-visible:outline-offset-2"
+            aria-label="설교 카드 목록 (좌우 화살표 키로 스크롤)"
           >
             {/* Left spacer for alignment with container */}
-            <div className="shrink-0 w-0 lg:w-[calc((100vw-80rem)/2)]" />
+            <div
+              aria-hidden="true"
+              className="shrink-0 w-0 lg:w-[calc((100vw-80rem)/2)]"
+            />
 
             {sermons.map((sermon, i) => (
               <motion.div
                 key={sermon.id}
-                initial={{ opacity: 0, x: 40 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                role="group"
+                aria-roledescription="slide"
+                aria-label={`설교 ${i + 1} / ${sermons.length}: ${sermon.title}`}
+                variants={makeFadeInX(40, i * 0.1, 0.5, rm)}
+                initial="hidden"
+                whileInView="visible"
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
                 className="min-w-[320px] md:min-w-[380px] shrink-0 snap-start"
               >
                 <SermonCard sermon={sermon} />
@@ -255,7 +387,10 @@ export default function VariantIPage() {
             ))}
 
             {/* Right spacer */}
-            <div className="shrink-0 w-4 lg:w-[calc((100vw-80rem)/2)]" />
+            <div
+              aria-hidden="true"
+              className="shrink-0 w-4 lg:w-[calc((100vw-80rem)/2)]"
+            />
           </div>
         </div>
 
@@ -266,6 +401,7 @@ export default function VariantIPage() {
               전체 보기
               <ArrowRight
                 size={18}
+                aria-hidden="true"
                 className="group-hover:translate-x-1 transition-transform"
               />
             </Button>
@@ -274,15 +410,19 @@ export default function VariantIPage() {
       </section>
 
       {/* ===== Pull-Quote Vision Section ===== */}
-      <section className="bg-[#F5F0E8] py-24 overflow-hidden">
+      <section
+        aria-label="교회 비전"
+        className="bg-[#F5F0E8] py-24 overflow-hidden"
+      >
         <Container size="md">
           <div className="relative max-w-4xl mx-auto text-center px-4">
-            {/* Decorative open quote */}
+            {/* Decorative open quote — purely visual */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.5 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              aria-hidden="true"
+              variants={makeScaleFadeIn(0, 0.6, rm)}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
               className="absolute -top-8 left-0 md:left-8 select-none pointer-events-none"
             >
               <span className="text-[120px] md:text-[150px] text-primary-200 leading-none font-serif">
@@ -290,34 +430,36 @@ export default function VariantIPage() {
               </span>
             </motion.div>
 
-            {/* Vision title */}
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="text-3xl md:text-4xl italic text-neutral-800 font-bold leading-snug pt-16 md:pt-20 mb-8"
-            >
-              {churchInfo.vision.title}
-            </motion.h2>
+            <blockquote cite="/about">
+              {/* Vision title */}
+              <motion.h2
+                variants={makeFadeInUp(30, 0.1, 0.8, rm)}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="text-3xl md:text-4xl italic text-neutral-800 font-bold leading-snug pt-16 md:pt-20 mb-8"
+              >
+                {churchInfo.vision.title}
+              </motion.h2>
 
-            {/* Vision content */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-lg md:text-xl text-neutral-600 leading-relaxed mb-10 max-w-3xl mx-auto"
-            >
-              {churchInfo.vision.content}
-            </motion.p>
+              {/* Vision content */}
+              <motion.p
+                variants={makeFadeInUp(20, 0.2, 0.6, rm)}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="text-lg md:text-xl text-neutral-600 leading-relaxed mb-10 max-w-3xl mx-auto"
+              >
+                {churchInfo.vision.content}
+              </motion.p>
+            </blockquote>
 
             {/* Values as inline list */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              variants={makeFadeInUp(20, 0.3, 0.6, rm)}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
               className="flex flex-wrap justify-center gap-4"
             >
               {churchInfo.vision.values.map((value, i) => (
@@ -325,18 +467,23 @@ export default function VariantIPage() {
                   key={i}
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/60 text-neutral-700 text-sm font-medium backdrop-blur-sm border border-primary-100"
                 >
-                  <Heart size={14} className="text-primary-400" />
+                  <Heart
+                    size={14}
+                    aria-hidden="true"
+                    className="text-primary-400"
+                  />
                   {value}
                 </span>
               ))}
             </motion.div>
 
-            {/* Decorative close quote */}
+            {/* Decorative close quote — purely visual */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.5 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              aria-hidden="true"
+              variants={makeScaleFadeIn(0.2, 0.6, rm)}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
               className="absolute -bottom-12 right-0 md:right-8 select-none pointer-events-none"
             >
               <span className="text-[120px] md:text-[150px] text-primary-200 leading-none font-serif">
@@ -348,35 +495,38 @@ export default function VariantIPage() {
       </section>
 
       {/* ===== Church Introduction - Image LEFT, Text RIGHT ===== */}
-      <section className="bg-[#FAF8F3] py-20">
+      <section aria-label="성락교회 소개" className="bg-[#FAF8F3] py-20">
         <Container size="xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left - Image */}
             <motion.div
-              initial={{ opacity: 0, x: -40 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              variants={makeFadeInX(-40, 0, 0.8, rm)}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
               className="relative"
             >
               <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
                 <Image
                   src="https://images.unsplash.com/photo-1519834785169-98be25ec3f84?q=80&w=1964"
-                  alt="Church interior"
+                  alt="성락교회 예배당 내부"
                   fill
                   className="object-cover"
                 />
               </div>
               {/* Decorative border behind */}
-              <div className="absolute -bottom-3 -right-3 w-full h-full rounded-2xl border-2 border-primary-200/50 -z-10" />
+              <div
+                aria-hidden="true"
+                className="absolute -bottom-3 -right-3 w-full h-full rounded-2xl border-2 border-primary-200/50 -z-10"
+              />
             </motion.div>
 
             {/* Right - Text */}
             <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              variants={makeFadeInX(40, 0, 0.8, rm)}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
             >
               <p className="text-sm text-primary-500 font-medium tracking-[0.3em] uppercase mb-3">
                 ABOUT
@@ -391,10 +541,10 @@ export default function VariantIPage() {
                 {greetingParagraphs.slice(0, 2).map((paragraph, i) => (
                   <motion.p
                     key={i}
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    variants={makeFadeInUp(10, 0.1 * (i + 1), 0.5, rm)}
+                    initial="hidden"
+                    whileInView="visible"
                     viewport={{ once: true }}
-                    transition={{ delay: 0.1 * (i + 1) }}
                     className="text-neutral-600 leading-relaxed text-lg"
                   >
                     {paragraph}
@@ -404,10 +554,10 @@ export default function VariantIPage() {
 
               {/* Tags */}
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                variants={makeFadeInUp(10, 0.3, 0.5, rm)}
+                initial="hidden"
+                whileInView="visible"
                 viewport={{ once: true }}
-                transition={{ delay: 0.3 }}
                 className="flex flex-wrap gap-2 mb-8"
               >
                 {["예배", "교육", "선교", "교제"].map((tag) => (
@@ -422,10 +572,10 @@ export default function VariantIPage() {
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                variants={makeFadeInUp(10, 0.4, 0.5, rm)}
+                initial="hidden"
+                whileInView="visible"
                 viewport={{ once: true }}
-                transition={{ delay: 0.4 }}
               >
                 <Link href="/about">
                   <Button
@@ -436,6 +586,7 @@ export default function VariantIPage() {
                     자세히 보기
                     <ArrowRight
                       size={18}
+                      aria-hidden="true"
                       className="group-hover:translate-x-1 transition-transform"
                     />
                   </Button>
@@ -447,15 +598,15 @@ export default function VariantIPage() {
       </section>
 
       {/* ===== Worship Info - Text LEFT, Image RIGHT (flipped) ===== */}
-      <section className="bg-white py-20">
+      <section aria-label="예배 안내" className="bg-white py-20">
         <Container size="xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left - Text */}
             <motion.div
-              initial={{ opacity: 0, x: -40 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              variants={makeFadeInX(-40, 0, 0.8, rm)}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
               className="order-2 lg:order-1"
             >
               <p className="text-sm text-primary-500 font-medium tracking-[0.3em] uppercase mb-3">
@@ -469,10 +620,10 @@ export default function VariantIPage() {
                 {worships.map((worship, i) => (
                   <motion.div
                     key={worship.id}
-                    initial={{ opacity: 0, y: 15 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    variants={makeFadeInUp(15, i * 0.08, 0.4, rm)}
+                    initial="hidden"
+                    whileInView="visible"
                     viewport={{ once: true }}
-                    transition={{ delay: i * 0.08 }}
                     className="border-l-2 border-primary-500 pl-4 py-1 group hover:border-primary-400 transition-colors"
                   >
                     <h3 className="font-semibold text-neutral-900 text-lg group-hover:text-primary-600 transition-colors">
@@ -480,11 +631,11 @@ export default function VariantIPage() {
                     </h3>
                     <div className="flex items-center gap-3 mt-1 text-neutral-500">
                       <span className="flex items-center gap-1 text-sm">
-                        <Clock size={14} />
+                        <Clock size={14} aria-hidden="true" />
                         {worship.time}
                       </span>
                       <span className="flex items-center gap-1 text-sm">
-                        <MapPin size={14} />
+                        <MapPin size={14} aria-hidden="true" />
                         {worship.location}
                       </span>
                     </div>
@@ -493,10 +644,10 @@ export default function VariantIPage() {
               </div>
 
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                variants={makeFadeInUp(10, 0.5, 0.5, rm)}
+                initial="hidden"
+                whileInView="visible"
                 viewport={{ once: true }}
-                transition={{ delay: 0.5 }}
                 className="mt-8"
               >
                 <Link href="/worship">
@@ -504,6 +655,7 @@ export default function VariantIPage() {
                     예배 안내 전체 보기
                     <ArrowRight
                       size={16}
+                      aria-hidden="true"
                       className="group-hover:translate-x-1 transition-transform"
                     />
                   </Button>
@@ -513,42 +665,47 @@ export default function VariantIPage() {
 
             {/* Right - Image */}
             <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              variants={makeFadeInX(40, 0, 0.8, rm)}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
               className="order-1 lg:order-2 relative"
             >
               <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
                 <Image
                   src="https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=2070"
-                  alt="Worship"
+                  alt="성락교회 예배 모습"
                   fill
                   className="object-cover"
                 />
               </div>
               {/* Decorative border */}
-              <div className="absolute -top-3 -left-3 w-full h-full rounded-2xl border-2 border-primary-200/50 -z-10" />
+              <div
+                aria-hidden="true"
+                className="absolute -top-3 -left-3 w-full h-full rounded-2xl border-2 border-primary-200/50 -z-10"
+              />
             </motion.div>
           </div>
         </Container>
       </section>
 
       {/* ===== News Section ===== */}
-      <section className="bg-[#FAF8F3] py-20">
+      <section aria-label="교회 소식" className="bg-[#FAF8F3] py-20">
         <Container size="xl">
           <div className="text-center mb-12">
             <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              variants={makeFadeInUp(10, 0, 0.5, rm)}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true }}
               className="text-sm text-primary-500 font-medium tracking-[0.3em] uppercase mb-2"
             >
               LATEST NEWS
             </motion.p>
             <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              variants={makeFadeInUp(20, 0, 0.6, rm)}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true }}
               className="text-3xl md:text-4xl font-bold text-neutral-900"
             >
@@ -560,11 +717,11 @@ export default function VariantIPage() {
             {notices.map((notice, i) => (
               <motion.div
                 key={notice.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                variants={makeFadeInUp(30, i * 0.1, 0.5, rm)}
+                initial="hidden"
+                whileInView="visible"
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                whileHover={{ y: -5 }}
+                whileHover={rm ? undefined : { y: -5 }}
               >
                 <NewsCard notice={notice} />
               </motion.div>
@@ -572,10 +729,10 @@ export default function VariantIPage() {
           </div>
 
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            variants={makeFadeIn(0.4, rm)}
+            initial="hidden"
+            whileInView="visible"
             viewport={{ once: true }}
-            transition={{ delay: 0.4 }}
             className="text-center mt-10"
           >
             <Link href="/news">
@@ -583,6 +740,7 @@ export default function VariantIPage() {
                 소식 더 보기
                 <ArrowRight
                   size={18}
+                  aria-hidden="true"
                   className="group-hover:translate-x-1 transition-transform"
                 />
               </Button>
@@ -592,9 +750,13 @@ export default function VariantIPage() {
       </section>
 
       {/* ===== Newcomer CTA ===== */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-500 via-primary-600 to-primary-700" />
-        <div className="absolute inset-0 opacity-10">
+      <section aria-label="새가족 안내" className="relative overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-r from-primary-500 via-primary-600 to-primary-700"
+        />
+        {/* Decorative dot pattern — aria-hidden */}
+        <div aria-hidden="true" className="absolute inset-0 opacity-10">
           <div
             className="absolute inset-0"
             style={{
@@ -608,18 +770,19 @@ export default function VariantIPage() {
         <Container size="xl" className="relative z-10 py-20 md:py-24">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              variants={makeFadeInX(-30, 0, 0.6, rm)}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true }}
               className="text-center md:text-left"
             >
               <Badge className="bg-white/20 text-white border-white/30 mb-4">
-                <Users size={12} className="mr-1" />
+                <Users size={12} aria-hidden="true" className="mr-1" />
                 Welcome
               </Badge>
-              <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
                 처음 오셨나요?
-              </h3>
+              </h2>
               <p className="text-white/80 text-lg max-w-md">
                 성락교회는 여러분을 진심으로 환영합니다. 함께 예배하고 성장하는
                 공동체가 되길 소망합니다.
@@ -627,8 +790,9 @@ export default function VariantIPage() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              variants={makeFadeInX(30, 0, 0.6, rm)}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true }}
             >
               <Link href="/newcomer">
@@ -639,6 +803,7 @@ export default function VariantIPage() {
                   새가족 안내
                   <ArrowRight
                     size={20}
+                    aria-hidden="true"
                     className="group-hover:translate-x-1 transition-transform"
                   />
                 </Button>
@@ -654,19 +819,16 @@ export default function VariantIPage() {
       <Link
         href="/"
         className="fixed bottom-6 right-6 z-50 bg-neutral-900 text-white px-4 py-2 rounded-full shadow-lg hover:bg-neutral-800 transition-colors text-sm group"
+        aria-label="시안 선택 페이지로 돌아가기"
       >
-        <span className="group-hover:-translate-x-1 inline-block transition-transform">
+        <span
+          aria-hidden="true"
+          className="group-hover:-translate-x-1 inline-block transition-transform"
+        >
           &larr;
         </span>{" "}
         시안 선택
       </Link>
-
-      {/* Hide scrollbar globally for this page */}
-      <style jsx global>{`
-        .snap-x::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
-import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   Play,
   ArrowRight,
@@ -14,6 +14,7 @@ import {
   Users,
   Heart,
   BookOpen,
+  Pause,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -24,8 +25,14 @@ import { Section, SectionHeader } from "@/components/common/section";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { SermonCard, LiveBadge, NewsCard, NewcomerCTA } from "@/components/home";
+import {
+  SermonCard,
+  LiveBadge,
+  NewsCard,
+  NewcomerCTA,
+} from "@/components/home";
 import { initialSermons, initialNotices } from "@/mocks/data/initial";
+import { reducedMotionVariants, instantTransition } from "@/lib/animations";
 
 const heroSlides = [
   {
@@ -57,9 +64,19 @@ const heroSlides = [
 const SLIDE_DURATION = 6000;
 
 export default function VariantBPage() {
+  const shouldReduceMotion = useReducedMotion();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [progress, setProgress] = useState(0);
+  // prefers-reduced-motion 시 자동 재생 초기값을 일시정지로 설정
   const [isPaused, setIsPaused] = useState(false);
+  const sliderRef = useRef<HTMLElement>(null);
+
+  // prefers-reduced-motion 활성화 시 자동 재생 중지
+  useEffect(() => {
+    if (shouldReduceMotion) {
+      setIsPaused(true);
+    }
+  }, [shouldReduceMotion]);
 
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
@@ -68,7 +85,7 @@ export default function VariantBPage() {
 
   const prevSlide = useCallback(() => {
     setCurrentSlide(
-      (prev) => (prev - 1 + heroSlides.length) % heroSlides.length
+      (prev) => (prev - 1 + heroSlides.length) % heroSlides.length,
     );
     setProgress(0);
   }, []);
@@ -77,6 +94,37 @@ export default function VariantBPage() {
     setCurrentSlide(index);
     setProgress(0);
   }, []);
+
+  const togglePause = useCallback(() => {
+    // reduced-motion 환경에서는 토글 불가
+    if (shouldReduceMotion) return;
+    setIsPaused((prev) => !prev);
+  }, [shouldReduceMotion]);
+
+  // 키보드 화살표로 슬라이드 전환
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // 슬라이더 영역이 포커스를 포함하거나 슬라이더 내 요소가 포커스됐을 때만 처리
+      const slider = sliderRef.current;
+      if (!slider) return;
+      if (
+        !slider.contains(document.activeElement) &&
+        document.activeElement !== slider
+      )
+        return;
+
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        nextSlide();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [nextSlide, prevSlide]);
 
   useEffect(() => {
     if (isPaused) return;
@@ -98,28 +146,64 @@ export default function VariantBPage() {
   const recentSermons = initialSermons.slice(0, 4);
   const notices = initialNotices.slice(0, 3);
 
+  // 슬라이드 이미지 전환 모션 variants
+  const slideImageVariants = shouldReduceMotion
+    ? reducedMotionVariants
+    : {
+        initial: { opacity: 0, scale: 1.1 },
+        animate: { opacity: 1, scale: 1 },
+        exit: { opacity: 0 },
+      };
+
+  const slideContentVariants = shouldReduceMotion
+    ? reducedMotionVariants
+    : {
+        initial: { opacity: 0, y: 30 },
+        animate: { opacity: 1, y: 0 },
+        exit: { opacity: 0, y: -30 },
+      };
+
+  const slideImageTransition = shouldReduceMotion
+    ? instantTransition
+    : { duration: 1.2 };
+
+  const slideContentTransition = shouldReduceMotion
+    ? instantTransition
+    : { duration: 0.5 };
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
 
       {/* Hero Section - Enhanced Image Slider */}
       <section
+        ref={sliderRef}
+        role="region"
+        aria-roledescription="carousel"
+        aria-label="히어로 슬라이더"
         className="relative h-[90vh] mt-16 md:mt-20 overflow-hidden"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
+        onMouseEnter={() => {
+          if (!shouldReduceMotion) setIsPaused(true);
+        }}
+        onMouseLeave={() => {
+          if (!shouldReduceMotion) setIsPaused(false);
+        }}
       >
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide}
-            initial={{ opacity: 0, scale: 1.1 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.2 }}
+            variants={slideImageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={slideImageTransition}
             className="absolute inset-0"
+            aria-label={`${currentSlide + 1} of ${heroSlides.length}`}
+            aria-roledescription="slide"
           >
             <Image
               src={heroSlides[currentSlide].image}
-              alt={heroSlides[currentSlide].title}
+              alt={`${heroSlides[currentSlide].title} - ${heroSlides[currentSlide].description}`}
               fill
               className="object-cover"
               priority
@@ -133,9 +217,11 @@ export default function VariantBPage() {
         <Container className="relative z-10 h-full flex items-center">
           <div className="max-w-2xl text-white">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
+              initial={shouldReduceMotion ? false : { opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
+              transition={
+                shouldReduceMotion ? instantTransition : { delay: 0.3 }
+              }
             >
               <LiveBadge className="mb-6" />
             </motion.div>
@@ -143,10 +229,11 @@ export default function VariantBPage() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentSlide}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -30 }}
-                transition={{ duration: 0.5 }}
+                variants={slideContentVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={slideContentTransition}
               >
                 <motion.p
                   className={`text-transparent bg-clip-text bg-gradient-to-r ${heroSlides[currentSlide].accent} font-semibold mb-3 text-lg`}
@@ -163,9 +250,11 @@ export default function VariantBPage() {
             </AnimatePresence>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
+              transition={
+                shouldReduceMotion ? instantTransition : { delay: 0.5 }
+              }
               className="flex gap-4"
             >
               <Link href="/live">
@@ -195,7 +284,14 @@ export default function VariantBPage() {
         </Container>
 
         {/* Slide Progress Bar */}
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 z-20">
+        <div
+          className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 z-20"
+          role="progressbar"
+          aria-label="슬라이드 진행률"
+          aria-valuenow={Math.round(progress)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+        >
           <motion.div
             className="h-full bg-primary-500"
             style={{ width: `${progress}%` }}
@@ -206,25 +302,63 @@ export default function VariantBPage() {
         {/* Enhanced Slide Controls */}
         <div className="absolute bottom-8 right-8 z-20 flex items-center gap-6">
           {/* Slide Counter */}
-          <div className="text-white/60 text-sm font-medium">
-            <span className="text-white text-lg">{String(currentSlide + 1).padStart(2, '0')}</span>
-            <span className="mx-1">/</span>
-            <span>{String(heroSlides.length).padStart(2, '0')}</span>
+          <div
+            className="text-white/60 text-sm font-medium"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            <span className="sr-only">현재 슬라이드:</span>
+            <span className="text-white text-lg">
+              {String(currentSlide + 1).padStart(2, "0")}
+            </span>
+            <span className="mx-1" aria-hidden="true">
+              /
+            </span>
+            <span>{String(heroSlides.length).padStart(2, "0")}</span>
+            <span className="sr-only">총 {heroSlides.length}개</span>
           </div>
 
           <div className="flex items-center gap-3">
             <button
               onClick={prevSlide}
-              className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all hover:scale-105 backdrop-blur-sm"
+              aria-label="이전 슬라이드"
+              className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all hover:scale-105 backdrop-blur-sm min-w-[44px] min-h-[44px] flex items-center justify-center"
             >
-              <ArrowLeft size={20} />
+              <ArrowLeft size={20} aria-hidden="true" />
             </button>
-            <div className="flex gap-2">
-              {heroSlides.map((_, i) => (
+
+            {/* 자동 재생 일시정지/재개 버튼 */}
+            <button
+              onClick={togglePause}
+              aria-label={
+                isPaused
+                  ? "슬라이드 자동 재생 재개"
+                  : "슬라이드 자동 재생 일시정지"
+              }
+              aria-pressed={isPaused}
+              disabled={!!shouldReduceMotion}
+              className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all hover:scale-105 backdrop-blur-sm min-w-[44px] min-h-[44px] flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              {isPaused ? (
+                <Play size={18} aria-hidden="true" />
+              ) : (
+                <Pause size={18} aria-hidden="true" />
+              )}
+            </button>
+
+            <div
+              className="flex gap-2"
+              role="tablist"
+              aria-label="슬라이드 선택"
+            >
+              {heroSlides.map((slide, i) => (
                 <button
                   key={i}
+                  role="tab"
+                  aria-selected={i === currentSlide}
+                  aria-label={`슬라이드 ${i + 1}: ${slide.title}`}
                   onClick={() => goToSlide(i)}
-                  className={`h-2 rounded-full transition-all duration-300 ${
+                  className={`h-2 rounded-full transition-all duration-300 min-w-[8px] min-h-[8px] ${
                     i === currentSlide
                       ? "w-10 bg-primary-500"
                       : "w-2 bg-white/40 hover:bg-white/60"
@@ -232,28 +366,35 @@ export default function VariantBPage() {
                 />
               ))}
             </div>
+
             <button
               onClick={nextSlide}
-              className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all hover:scale-105 backdrop-blur-sm"
+              aria-label="다음 슬라이드"
+              className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all hover:scale-105 backdrop-blur-sm min-w-[44px] min-h-[44px] flex items-center justify-center"
             >
-              <ArrowRight size={20} />
+              <ArrowRight size={20} aria-hidden="true" />
             </button>
           </div>
         </div>
 
         {/* Decorative Elements */}
         <motion.div
-          initial={{ opacity: 0 }}
+          initial={shouldReduceMotion ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
+          transition={shouldReduceMotion ? instantTransition : { delay: 1 }}
           className="absolute top-1/2 right-8 -translate-y-1/2 z-10 hidden lg:flex flex-col gap-4"
+          aria-hidden="true"
         >
           {["예배", "말씀", "교제"].map((text, i) => (
             <motion.div
               key={text}
-              initial={{ opacity: 0, x: 20 }}
+              initial={shouldReduceMotion ? false : { opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.2 + i * 0.1 }}
+              transition={
+                shouldReduceMotion
+                  ? instantTransition
+                  : { delay: 1.2 + i * 0.1 }
+              }
               className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-white/70 text-sm"
             >
               {text}
@@ -267,6 +408,7 @@ export default function VariantBPage() {
         background="white"
         padding="md"
         className="-mt-20 relative z-20"
+        aria-label="교회 기본 정보"
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
@@ -294,10 +436,12 @@ export default function VariantBPage() {
           ].map((item, i) => (
             <motion.div
               key={item.title}
-              initial={{ opacity: 0, y: 30 }}
+              initial={shouldReduceMotion ? false : { opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
+              transition={
+                shouldReduceMotion ? instantTransition : { delay: i * 0.1 }
+              }
             >
               <Link href={item.link}>
                 <Card className="border-none shadow-xl hover:shadow-2xl transition-all duration-300 group overflow-hidden">
@@ -305,7 +449,11 @@ export default function VariantBPage() {
                     <div
                       className={`w-14 h-14 rounded-xl ${item.color} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300`}
                     >
-                      <item.icon className="text-white" size={26} />
+                      <item.icon
+                        className="text-white"
+                        size={26}
+                        aria-hidden="true"
+                      />
                     </div>
                     <div className="flex-1">
                       <p className="text-sm text-neutral-500 mb-0.5">
@@ -318,6 +466,7 @@ export default function VariantBPage() {
                     <ChevronRight
                       size={20}
                       className="text-neutral-300 group-hover:text-primary-500 group-hover:translate-x-1 transition-all"
+                      aria-hidden="true"
                     />
                   </CardContent>
                 </Card>
@@ -328,25 +477,50 @@ export default function VariantBPage() {
       </Section>
 
       {/* Stats Section */}
-      <Section background="gray" padding="lg">
+      <Section background="gray" padding="lg" aria-label="교회 현황">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
-            { icon: Users, value: "1,500+", label: "성도", color: "text-blue-500" },
-            { icon: BookOpen, value: "25+", label: "년 역사", color: "text-primary-500" },
-            { icon: Heart, value: "20+", label: "사역팀", color: "text-rose-500" },
-            { icon: Play, value: "500+", label: "설교 영상", color: "text-emerald-500" },
+            {
+              icon: Users,
+              value: "1,500+",
+              label: "성도",
+              color: "text-blue-500",
+            },
+            {
+              icon: BookOpen,
+              value: "25+",
+              label: "년 역사",
+              color: "text-primary-500",
+            },
+            {
+              icon: Heart,
+              value: "20+",
+              label: "사역팀",
+              color: "text-rose-500",
+            },
+            {
+              icon: Play,
+              value: "500+",
+              label: "설교 영상",
+              color: "text-emerald-500",
+            },
           ].map((stat, i) => (
             <motion.div
               key={stat.label}
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
+              transition={
+                shouldReduceMotion ? instantTransition : { delay: i * 0.1 }
+              }
               className="text-center"
             >
               <motion.div
-                whileHover={{ scale: 1.1, rotate: 5 }}
+                whileHover={
+                  shouldReduceMotion ? undefined : { scale: 1.1, rotate: 5 }
+                }
                 className={`w-16 h-16 mx-auto mb-3 rounded-2xl bg-white shadow-md flex items-center justify-center ${stat.color}`}
+                aria-hidden="true"
               >
                 <stat.icon size={28} />
               </motion.div>
@@ -360,7 +534,7 @@ export default function VariantBPage() {
       </Section>
 
       {/* Sermons Section - Enhanced */}
-      <Section background="white" padding="xl">
+      <Section background="white" padding="xl" aria-label="설교">
         <div className="flex items-end justify-between mb-10">
           <div>
             <Badge className="mb-3 bg-primary-100 text-primary-600 hover:bg-primary-100">
@@ -377,6 +551,7 @@ export default function VariantBPage() {
               <ArrowRight
                 size={16}
                 className="group-hover:translate-x-1 transition-transform"
+                aria-hidden="true"
               />
             </Button>
           </Link>
@@ -386,11 +561,13 @@ export default function VariantBPage() {
           {recentSermons.map((sermon, i) => (
             <motion.div
               key={sermon.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              whileHover={{ y: -5 }}
+              transition={
+                shouldReduceMotion ? instantTransition : { delay: i * 0.1 }
+              }
+              whileHover={shouldReduceMotion ? undefined : { y: -5 }}
             >
               <SermonCard sermon={sermon} />
             </motion.div>
@@ -399,11 +576,15 @@ export default function VariantBPage() {
       </Section>
 
       {/* Vision Section - Enhanced */}
-      <section className="relative py-28 md:py-36 overflow-hidden">
+      <section
+        className="relative py-28 md:py-36 overflow-hidden"
+        aria-label="비전"
+      >
         <div className="absolute inset-0">
           <Image
             src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2070"
-            alt="Vision"
+            alt=""
+            role="presentation"
             fill
             className="object-cover"
           />
@@ -411,11 +592,15 @@ export default function VariantBPage() {
         </div>
 
         {/* Animated Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 opacity-10" aria-hidden="true">
           <motion.div
-            animate={{
-              backgroundPosition: ["0% 0%", "100% 100%"],
-            }}
+            animate={
+              shouldReduceMotion
+                ? undefined
+                : {
+                    backgroundPosition: ["0% 0%", "100% 100%"],
+                  }
+            }
             transition={{
               duration: 20,
               repeat: Infinity,
@@ -432,13 +617,13 @@ export default function VariantBPage() {
 
         <Container className="relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={shouldReduceMotion ? false : { opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="max-w-3xl mx-auto text-center text-white"
           >
             <motion.p
-              initial={{ opacity: 0, y: 10 }}
+              initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               className="text-primary-400 font-medium mb-4 tracking-widest"
@@ -453,19 +638,24 @@ export default function VariantBPage() {
               </span>
             </h2>
             <p className="text-lg text-white/70 leading-relaxed mb-10 max-w-2xl mx-auto">
-              주님과의 관계 안에서 믿음으로 살아가는 교회.
-              우리는 하나님을 사랑하고, 이웃을 사랑하며, 세상을 섬기는
-              공동체입니다.
+              주님과의 관계 안에서 믿음으로 살아가는 교회. 우리는 하나님을
+              사랑하고, 이웃을 사랑하며, 세상을 섬기는 공동체입니다.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               {["신실한 헌신", "긍휼한 아낌", "함께 성장"].map((text, i) => (
                 <motion.div
                   key={text}
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={
+                    shouldReduceMotion ? false : { opacity: 0, scale: 0.9 }
+                  }
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.2 + i * 0.1 }}
-                  whileHover={{ scale: 1.05 }}
+                  transition={
+                    shouldReduceMotion
+                      ? instantTransition
+                      : { delay: 0.2 + i * 0.1 }
+                  }
+                  whileHover={shouldReduceMotion ? undefined : { scale: 1.05 }}
                   className="px-6 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:border-primary-400/50 transition-colors"
                 >
                   {text}
@@ -477,7 +667,7 @@ export default function VariantBPage() {
       </section>
 
       {/* News & Newcomer - Enhanced */}
-      <Section background="gray" padding="xl">
+      <Section background="gray" padding="xl" aria-label="교회 소식 및 새가족">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* News */}
           <div className="lg:col-span-2">
@@ -493,7 +683,7 @@ export default function VariantBPage() {
               <Link href="/news">
                 <Button variant="ghost" size="sm">
                   전체 보기
-                  <ArrowRight size={16} />
+                  <ArrowRight size={16} aria-hidden="true" />
                 </Button>
               </Link>
             </div>
@@ -501,10 +691,12 @@ export default function VariantBPage() {
               {notices.map((notice, i) => (
                 <motion.div
                   key={notice.id}
-                  initial={{ opacity: 0, x: -20 }}
+                  initial={shouldReduceMotion ? false : { opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
+                  transition={
+                    shouldReduceMotion ? instantTransition : { delay: i * 0.1 }
+                  }
                 >
                   <NewsCard notice={notice} />
                 </motion.div>
@@ -516,7 +708,7 @@ export default function VariantBPage() {
           <div className="space-y-4">
             {/* Newcomer CTA */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
@@ -528,18 +720,22 @@ export default function VariantBPage() {
               href="https://youtube.com"
               target="_blank"
               rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 20 }}
+              aria-label="성락교회 YouTube 채널 바로가기 (새 창)"
+              initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              whileHover={{ scale: 1.02 }}
+              whileHover={shouldReduceMotion ? undefined : { scale: 1.02 }}
               className="block p-6 rounded-2xl bg-gradient-to-br from-neutral-900 to-neutral-800 text-white overflow-hidden relative group"
             >
-              <div className="absolute -right-8 -bottom-8 opacity-10 group-hover:opacity-20 transition-opacity">
+              <div
+                className="absolute -right-8 -bottom-8 opacity-10 group-hover:opacity-20 transition-opacity"
+                aria-hidden="true"
+              >
                 <Youtube size={120} />
               </div>
               <div className="flex items-center gap-4 relative z-10">
                 <div className="w-14 h-14 rounded-xl bg-red-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Play size={24} fill="white" />
+                  <Play size={24} fill="white" aria-hidden="true" />
                 </div>
                 <div className="flex-1">
                   <p className="font-bold text-lg">YouTube</p>
@@ -550,13 +746,14 @@ export default function VariantBPage() {
                 <ArrowRight
                   size={20}
                   className="text-neutral-400 group-hover:text-white group-hover:translate-x-1 transition-all"
+                  aria-hidden="true"
                 />
               </div>
             </motion.a>
 
             {/* Quick Links */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               className="p-6 rounded-2xl bg-white shadow-md"
@@ -579,6 +776,7 @@ export default function VariantBPage() {
                     <ChevronRight
                       size={18}
                       className="text-neutral-300 group-hover:text-primary-500 group-hover:translate-x-1 transition-all"
+                      aria-hidden="true"
                     />
                   </Link>
                 ))}
@@ -595,7 +793,10 @@ export default function VariantBPage() {
         href="/"
         className="fixed bottom-6 right-6 z-50 bg-neutral-900 text-white px-4 py-2 rounded-full shadow-lg hover:bg-neutral-800 transition-colors text-sm group"
       >
-        <span className="group-hover:-translate-x-1 inline-block transition-transform">
+        <span
+          className="group-hover:-translate-x-1 inline-block transition-transform"
+          aria-hidden="true"
+        >
           ←
         </span>{" "}
         시안 선택

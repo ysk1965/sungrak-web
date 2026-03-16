@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, type HTMLMotionProps } from "framer-motion";
+import { motion, useReducedMotion, type HTMLMotionProps } from "framer-motion";
 import { type ReactNode } from "react";
 import {
   fadeInUp,
@@ -9,6 +9,9 @@ import {
   staggerContainer,
   staggerItem,
   transitions,
+  reducedMotionVariants,
+  reducedMotionStaggerContainer,
+  instantTransition,
 } from "@/lib/animations";
 
 interface MotionWrapperProps {
@@ -23,13 +26,19 @@ export function FadeInUp({
   delay = 0,
   className,
 }: MotionWrapperProps) {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <motion.div
       initial="initial"
       whileInView="animate"
       viewport={{ once: true, margin: "-50px" }}
-      variants={fadeInUp}
-      transition={{ ...transitions.smooth, delay }}
+      variants={shouldReduceMotion ? reducedMotionVariants : fadeInUp}
+      transition={
+        shouldReduceMotion
+          ? instantTransition
+          : { ...transitions.smooth, delay }
+      }
       className={className}
     >
       {children}
@@ -39,13 +48,19 @@ export function FadeInUp({
 
 // 페이드 인 애니메이션
 export function FadeIn({ children, delay = 0, className }: MotionWrapperProps) {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <motion.div
       initial="initial"
       whileInView="animate"
       viewport={{ once: true }}
-      variants={fadeIn}
-      transition={{ ...transitions.smooth, delay }}
+      variants={shouldReduceMotion ? reducedMotionVariants : fadeIn}
+      transition={
+        shouldReduceMotion
+          ? instantTransition
+          : { ...transitions.smooth, delay }
+      }
       className={className}
     >
       {children}
@@ -59,13 +74,19 @@ export function ScaleIn({
   delay = 0,
   className,
 }: MotionWrapperProps) {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <motion.div
       initial="initial"
       whileInView="animate"
       viewport={{ once: true }}
-      variants={scaleIn}
-      transition={{ ...transitions.spring, delay }}
+      variants={shouldReduceMotion ? reducedMotionVariants : scaleIn}
+      transition={
+        shouldReduceMotion
+          ? instantTransition
+          : { ...transitions.spring, delay }
+      }
       className={className}
     >
       {children}
@@ -81,12 +102,16 @@ export function StaggerContainer({
   children: ReactNode;
   className?: string;
 }) {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <motion.div
       initial="initial"
       whileInView="animate"
       viewport={{ once: true, margin: "-100px" }}
-      variants={staggerContainer}
+      variants={
+        shouldReduceMotion ? reducedMotionStaggerContainer : staggerContainer
+      }
       className={className}
     >
       {children}
@@ -102,10 +127,12 @@ export function StaggerItem({
   children: ReactNode;
   className?: string;
 }) {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <motion.div
-      variants={staggerItem}
-      transition={transitions.smooth}
+      variants={shouldReduceMotion ? reducedMotionVariants : staggerItem}
+      transition={shouldReduceMotion ? instantTransition : transitions.smooth}
       className={className}
     >
       {children}
@@ -119,11 +146,13 @@ export function HoverCard({
   className,
   ...props
 }: HTMLMotionProps<"div"> & { children: ReactNode }) {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <motion.div
-      whileHover={{ scale: 1.02, y: -4 }}
-      whileTap={{ scale: 0.98 }}
-      transition={transitions.spring}
+      whileHover={shouldReduceMotion ? undefined : { scale: 1.02, y: -4 }}
+      whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+      transition={shouldReduceMotion ? instantTransition : transitions.spring}
       className={className}
       {...props}
     >
@@ -138,12 +167,16 @@ export function ParallaxSection({
   className,
   offset = 50,
 }: MotionWrapperProps & { offset?: number }) {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <motion.section
-      initial={{ y: offset, opacity: 0 }}
+      initial={
+        shouldReduceMotion ? { y: 0, opacity: 1 } : { y: offset, opacity: 0 }
+      }
       whileInView={{ y: 0, opacity: 1 }}
       viewport={{ once: true, margin: "-100px" }}
-      transition={transitions.slow}
+      transition={shouldReduceMotion ? instantTransition : transitions.slow}
       className={className}
     >
       {children}

@@ -4,7 +4,7 @@ import { Container } from "./container";
 
 export function Footer() {
   return (
-    <footer className="bg-neutral-900 text-white">
+    <footer className="bg-neutral-900 text-white" aria-label="사이트 푸터">
       <Container>
         <div className="py-12 md:py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
@@ -16,25 +16,37 @@ export function Footer() {
                 <br />
                 Sincere Devotion, Compassionate Fellowship
               </p>
-              <div className="space-y-3 text-sm text-neutral-400">
+              <address className="not-italic space-y-3 text-sm text-neutral-400">
                 <div className="flex items-start gap-3">
-                  <MapPin size={18} className="mt-0.5 shrink-0" />
+                  <MapPin
+                    size={18}
+                    className="mt-0.5 shrink-0"
+                    aria-hidden="true"
+                  />
                   <span>서울시 구로구 신도림로 56-24</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Phone size={18} className="shrink-0" />
-                  <span>070-7300-6200</span>
+                  <Phone size={18} className="shrink-0" aria-hidden="true" />
+                  <a
+                    href="tel:070-7300-6200"
+                    className="hover:text-white transition-colors"
+                  >
+                    070-7300-6200
+                  </a>
                 </div>
-              </div>
+              </address>
             </div>
 
             {/* 예배 시간 */}
             <div>
               <h4 className="font-semibold mb-4 flex items-center gap-2">
-                <Clock size={18} />
+                <Clock size={18} aria-hidden="true" />
                 예배 시간
               </h4>
-              <ul className="space-y-2 text-sm text-neutral-400">
+              <ul
+                className="space-y-2 text-sm text-neutral-400"
+                aria-label="예배 시간 목록"
+              >
                 <li>
                   <span className="text-neutral-300">주일 1부</span> 오전 7:00
                 </li>
@@ -54,7 +66,7 @@ export function Footer() {
             </div>
 
             {/* 바로가기 */}
-            <div>
+            <nav aria-label="푸터 내비게이션">
               <h4 className="font-semibold mb-4">바로가기</h4>
               <ul className="space-y-2 text-sm">
                 <li>
@@ -87,12 +99,13 @@ export function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-neutral-400 hover:text-white transition-colors"
+                    aria-label="성락교회 YouTube 채널 (새 탭에서 열림)"
                   >
                     YouTube
                   </a>
                 </li>
               </ul>
-            </div>
+            </nav>
           </div>
         </div>
 

@@ -22,6 +22,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
+        <a href="#main-content" className="skip-navigation">
+          본문으로 건너뛰기
+        </a>
         <Providers>{children}</Providers>
       </body>
     </html>
