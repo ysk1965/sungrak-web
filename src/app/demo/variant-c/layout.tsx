@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Header } from "@/components/common/header";
 import { Footer } from "@/components/common/footer";
+import { BasePathProvider } from "@/contexts/base-path-context";
 
 export default function VariantCLayout({
   children,
@@ -8,6 +9,7 @@ export default function VariantCLayout({
   children: React.ReactNode;
 }) {
   return (
+    <BasePathProvider basePath="/demo/variant-c">
     <div className="min-h-screen bg-neutral-50">
       <Header basePath="/demo/variant-c" />
 
@@ -38,5 +40,6 @@ export default function VariantCLayout({
         시안 선택
       </Link>
     </div>
+    </BasePathProvider>
   );
 }

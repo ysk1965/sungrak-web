@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Container } from "./container";
 import { cn } from "@/lib/utils";
+import { useBasePath } from "@/contexts/base-path-context";
 
 const navItems = [
   { href: "/about", label: "교회소개" },
@@ -21,9 +22,11 @@ interface HeaderProps {
   basePath?: string;
 }
 
-export function Header({ variant = "default", basePath = "" }: HeaderProps) {
+export function Header({ variant = "default", basePath: basePathProp }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const contextBasePath = useBasePath();
+  const basePath = basePathProp ?? contextBasePath ?? "";
 
   return (
     <>

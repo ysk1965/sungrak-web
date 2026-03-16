@@ -1,12 +1,17 @@
+"use client";
+
 import Link from "next/link";
 import { MapPin, Phone, Clock } from "lucide-react";
 import { Container } from "./container";
+import { useBasePath } from "@/contexts/base-path-context";
 
 interface FooterProps {
   basePath?: string;
 }
 
-export function Footer({ basePath = "" }: FooterProps) {
+export function Footer({ basePath: basePathProp }: FooterProps) {
+  const contextBasePath = useBasePath();
+  const basePath = basePathProp ?? contextBasePath ?? "";
   return (
     <footer className="bg-neutral-900 text-white" aria-label="사이트 푸터">
       <Container>

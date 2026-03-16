@@ -369,7 +369,7 @@ export default function VariantGPage() {
             )}
             className="flex flex-wrap items-center justify-center gap-4"
           >
-            <Link href="/live">
+            <Link href="/demo/variant-g/sermons">
               <Button
                 size="lg"
                 className="bg-primary-500 hover:bg-primary-600 text-white shadow-lg shadow-primary-500/25 h-14 px-8 text-base"
@@ -378,7 +378,7 @@ export default function VariantGPage() {
                 실시간 예배
               </Button>
             </Link>
-            <Link href="/about">
+            <Link href="/demo/variant-g/about">
               <Button
                 size="lg"
                 variant="outline"
@@ -485,7 +485,7 @@ export default function VariantGPage() {
                 {featuredSermon.preacher} &middot;{" "}
                 {formatDate(featuredSermon.publishedAt)}
               </p>
-              <Link href="/sermons">
+              <Link href="/demo/variant-g/sermons">
                 <Button className="bg-primary-500 hover:bg-primary-600 text-white group mb-8">
                   설교 듣기
                   <ArrowRight
@@ -661,6 +661,28 @@ export default function VariantGPage() {
               </motion.article>
             ))}
           </div>
+
+          <motion.div
+            {...getInViewProps(
+              { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } },
+              0.6,
+            )}
+            className="text-center mt-8"
+          >
+            <Link href="/demo/variant-g/worship">
+              <Button
+                variant="outline"
+                className="border-white/20 text-white hover:bg-white/10 group"
+              >
+                예배 안내 자세히 보기
+                <ArrowRight
+                  size={16}
+                  className="ml-1 group-hover:translate-x-1 transition-transform"
+                  aria-hidden="true"
+                />
+              </Button>
+            </Link>
+          </motion.div>
         </Container>
       </section>
 
@@ -747,7 +769,7 @@ export default function VariantGPage() {
               0.6,
             )}
           >
-            <Link href="/newcomer">
+            <Link href="/demo/variant-g/newcomer">
               <Button
                 size="lg"
                 className="bg-white text-primary-600 hover:bg-white/90 shadow-xl h-14 px-10 text-base font-medium group"
@@ -842,6 +864,29 @@ export default function VariantGPage() {
                 </motion.article>
               ))}
             </div>
+
+            <motion.div
+              {...getInViewProps(
+                { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } },
+                0.5,
+              )}
+              className="text-center mt-6"
+            >
+              <Link href="/demo/variant-g/news">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-white/20 text-white hover:bg-white/10 group"
+                >
+                  전체 소식 보기
+                  <ArrowRight
+                    size={14}
+                    className="ml-1 group-hover:translate-x-1 transition-transform"
+                    aria-hidden="true"
+                  />
+                </Button>
+              </Link>
+            </motion.div>
           </Container>
         </div>
 

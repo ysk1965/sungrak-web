@@ -4,11 +4,13 @@ import { ReactNode } from "react";
 import Link from "next/link";
 import { Header } from "@/components/common/header";
 import { Footer } from "@/components/common/footer";
+import { BasePathProvider } from "@/contexts/base-path-context";
 
 const VARIANT_D_BASE = "/demo/variant-d";
 
 export default function VariantDLayout({ children }: { children: ReactNode }) {
   return (
+    <BasePathProvider basePath={VARIANT_D_BASE}>
     <div className="min-h-screen bg-white">
       <Header basePath={VARIANT_D_BASE} />
 
@@ -28,5 +30,6 @@ export default function VariantDLayout({ children }: { children: ReactNode }) {
         시안 선택
       </Link>
     </div>
+    </BasePathProvider>
   );
 }
