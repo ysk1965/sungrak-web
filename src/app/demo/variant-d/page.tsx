@@ -21,8 +21,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { Header } from "@/components/common/header";
-import { Footer } from "@/components/common/footer";
 import { Container } from "@/components/common";
 import { Section, SectionHeader } from "@/components/common/section";
 import { Button } from "@/components/ui/button";
@@ -60,9 +58,7 @@ export default function VariantDPage() {
   const notices = initialNotices.slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
-
+    <>
       {/* Hero Banner - Classic Style Enhanced */}
       <section
         ref={heroRef}
@@ -145,7 +141,7 @@ export default function VariantDPage() {
               transition={shouldReduceMotion ? { duration: 0 } : { delay: 0.7 }}
               className="flex flex-wrap gap-4"
             >
-              <Link href="/about">
+              <Link href="/demo/variant-d/about">
                 <Button
                   size="lg"
                   className="bg-primary-500 hover:bg-primary-600 group shadow-lg shadow-primary-500/25 min-h-[44px]"
@@ -158,7 +154,7 @@ export default function VariantDPage() {
                   />
                 </Button>
               </Link>
-              <Link href="/newcomer">
+              <Link href="/demo/variant-d/newcomer">
                 <Button
                   size="lg"
                   variant="outline"
@@ -390,7 +386,7 @@ export default function VariantDPage() {
             <h2 className="text-3xl font-bold text-neutral-900">예배 안내</h2>
             <p className="text-neutral-500 mt-1">함께 예배드려요</p>
           </div>
-          <Link href="/worship">
+          <Link href="/demo/variant-d/worship">
             <Button variant="ghost" className="group min-h-[44px]">
               자세히 보기
               <ArrowRight
@@ -482,7 +478,7 @@ export default function VariantDPage() {
             <h2 className="text-3xl font-bold text-neutral-900">설교</h2>
             <p className="text-neutral-500 mt-1">말씀으로 함께 성장합니다</p>
           </div>
-          <Link href="/sermons">
+          <Link href="/demo/variant-d/sermons">
             <Button variant="outline" className="group min-h-[44px]">
               전체 설교 보기
               <ArrowRight
@@ -521,7 +517,7 @@ export default function VariantDPage() {
             </Badge>
             <h2 className="text-2xl font-bold text-neutral-900">교회 소식</h2>
           </div>
-          <Link href="/news">
+          <Link href="/demo/variant-d/news">
             <Button variant="ghost" className="group min-h-[44px]">
               전체 보기
               <ArrowRight
@@ -622,7 +618,7 @@ export default function VariantDPage() {
                 }
                 className="flex flex-wrap gap-4"
               >
-                <Link href="/newcomer">
+                <Link href="/demo/variant-d/newcomer">
                   <Button
                     size="lg"
                     className="bg-white text-primary-600 hover:bg-white/90 shadow-lg group min-h-[44px]"
@@ -635,7 +631,7 @@ export default function VariantDPage() {
                     />
                   </Button>
                 </Link>
-                <Link href="/about#location">
+                <Link href="/demo/variant-d/about#location">
                   <Button
                     size="lg"
                     variant="outline"
@@ -656,20 +652,6 @@ export default function VariantDPage() {
           />
         </motion.div>
       </Section>
-
-      <Footer />
-
-      {/* Back to Demo Selection */}
-      <Link
-        href="/"
-        className="fixed bottom-6 right-6 z-50 bg-neutral-900 text-white px-4 py-2 rounded-full shadow-lg hover:bg-neutral-800 transition-colors text-sm group min-h-[44px] flex items-center"
-        aria-label="시안 선택 페이지로 돌아가기"
-      >
-        <span className="group-hover:-translate-x-1 motion-reduce:transition-none inline-block transition-transform">
-          ←
-        </span>{" "}
-        시안 선택
-      </Link>
-    </div>
+    </>
   );
 }
