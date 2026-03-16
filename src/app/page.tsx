@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Layout, Type, PanelTop, BookOpen } from "lucide-react";
+import { ArrowRight, Layout, Type, PanelTop, BookOpen, Moon, ImageIcon } from "lucide-react";
 
 const variants = [
   {
@@ -58,6 +58,32 @@ const variants = [
       "https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=600",
     tag: "매거진",
   },
+  {
+    id: "e",
+    href: "/demo/variant-j",
+    title: "시안 E",
+    subtitle: "다크 모던",
+    description: "다크 테마, 골드 액센트, 이미지 중심, 소셜 미디어 통합",
+    icon: Moon,
+    features: ["다크 테마", "3-column 카드", "소셜 미디어"],
+    color: "from-stone-700 to-amber-600",
+    preview:
+      "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?q=80&w=600",
+    tag: "다크 모드",
+  },
+  {
+    id: "f",
+    href: "/demo/variant-k",
+    title: "시안 F",
+    subtitle: "화이트 미니멀",
+    description: "화이트 베이스, 풀스크린 슬라이더, 3열 카드, 정보 전달형",
+    icon: ImageIcon,
+    features: ["이미지 슬라이더", "3-column 예배카드", "화이트 스페이스"],
+    color: "from-neutral-400 to-neutral-700",
+    preview:
+      "https://images.unsplash.com/photo-1519834785169-98be25ec3f84?q=80&w=600",
+    tag: "화이트 미니멀",
+  },
 ];
 
 export default function Home() {
@@ -95,6 +121,12 @@ export default function Home() {
           </span>
           <span className="px-3 py-1 rounded-full bg-rose-100 text-rose-700 text-xs font-medium">
             D: 매거진/에디토리얼
+          </span>
+          <span className="px-3 py-1 rounded-full bg-stone-800 text-amber-400 text-xs font-medium">
+            E: 다크 모던
+          </span>
+          <span className="px-3 py-1 rounded-full bg-neutral-100 text-neutral-600 text-xs font-medium">
+            F: 화이트 미니멀
           </span>
         </div>
       </div>

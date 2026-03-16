@@ -37,7 +37,7 @@ export default function VariantJSermonsPage() {
     <>
       {/* ── Hero Banner ── */}
       <section
-        id="main-content"
+        id="variant-j-content"
         aria-label="설교"
         className="relative min-h-[50vh] flex items-center justify-center mt-16 md:mt-20 overflow-hidden"
       >

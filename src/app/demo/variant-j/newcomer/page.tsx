@@ -90,7 +90,7 @@ export default function VariantJNewcomerPage() {
     <>
       {/* Hero */}
       <section
-        id="main-content"
+        id="variant-j-content"
         aria-label="새가족 환영"
         className="bg-stone-950 mt-16 md:mt-20 py-20 md:py-32"
       >
@@ -392,7 +392,7 @@ export default function VariantJNewcomerPage() {
               </div>
 
               <div className="pt-4 border-t border-stone-700/50">
-                <Link href="/newcomer">
+                <a href="tel:070-7300-6200">
                   <Button className="bg-amber-500 text-stone-950 hover:bg-amber-400 font-semibold px-8 py-3 min-h-[44px] rounded-full group">
                     문의하기
                     <ArrowRight
@@ -401,7 +401,7 @@ export default function VariantJNewcomerPage() {
                       aria-hidden="true"
                     />
                   </Button>
-                </Link>
+                </a>
               </div>
             </motion.div>
           </div>

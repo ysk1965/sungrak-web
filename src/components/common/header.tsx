@@ -105,7 +105,12 @@ export function Header({ variant = "default", basePath: basePathProp }: HeaderPr
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden bg-white border-t border-neutral-100"
+              className={cn(
+                "md:hidden border-t",
+                variant === "transparent"
+                  ? "bg-stone-900/95 backdrop-blur-md border-stone-800"
+                  : "bg-white border-neutral-100",
+              )}
             >
               <Container>
                 <div className="py-4 space-y-1">
@@ -117,8 +122,12 @@ export function Header({ variant = "default", basePath: basePathProp }: HeaderPr
                       className={cn(
                         "block py-3 px-4 rounded-lg transition-colors",
                         pathname === `${basePath}${item.href}`
-                          ? "text-primary-500 bg-primary-50 font-semibold"
-                          : "text-neutral-700 hover:bg-neutral-50",
+                          ? variant === "transparent"
+                            ? "text-amber-400 bg-amber-500/10 font-semibold"
+                            : "text-primary-500 bg-primary-50 font-semibold"
+                          : variant === "transparent"
+                            ? "text-stone-300 hover:bg-stone-800"
+                            : "text-neutral-700 hover:bg-neutral-50",
                       )}
                     >
                       {item.label}

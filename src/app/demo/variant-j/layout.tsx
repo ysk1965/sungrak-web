@@ -27,7 +27,7 @@ export default function VariantJLayout({
 
         {/* Skip Navigation */}
         <a
-          href="#main-content"
+          href="#variant-j-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:bg-amber-500 focus:text-stone-950 focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg focus:text-sm focus:font-medium"
         >
           본문 바로가기
@@ -35,7 +35,7 @@ export default function VariantJLayout({
 
         {children}
 
-        <Footer basePath={VARIANT_J_BASE} />
+        <Footer basePath={VARIANT_J_BASE} variant="dark" />
 
         {/* Back to Demo Selection */}
         <Link

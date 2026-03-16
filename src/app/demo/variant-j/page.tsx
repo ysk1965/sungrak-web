@@ -24,7 +24,6 @@ import Image from "next/image";
 import { Container } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { SermonCard } from "@/components/home";
 import {
   initialSermons,
   initialNotices,
@@ -149,7 +148,7 @@ export default function VariantJPage() {
       {/* 1. HERO -- Full-screen dark cinematic                        */}
       {/* ============================================================ */}
       <section
-        id="main-content"
+        id="variant-j-content"
         ref={heroRef}
         className="relative h-screen flex flex-col overflow-hidden bg-stone-950"
         aria-label="메인 히어로"

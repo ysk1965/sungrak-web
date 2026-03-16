@@ -195,7 +195,7 @@ export default function VariantJNewsPage() {
     <>
       {/* ── Hero Banner (50vh) ── */}
       <section
-        id="main-content"
+        id="variant-j-content"
         aria-label="교회 소식"
         className="relative h-[50vh] min-h-[400px] mt-16 md:mt-20 overflow-hidden flex items-center"
       >

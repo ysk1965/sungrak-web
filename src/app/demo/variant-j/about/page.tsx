@@ -22,7 +22,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { Container } from "@/components/common";
-import { Badge } from "@/components/ui/badge";
 import { initialChurchInfo } from "@/mocks/data/initial";
 
 const ministries = [
@@ -111,7 +110,7 @@ export default function VariantJAboutPage() {
     <>
       {/* Hero - Editorial Split (3:2 asymmetric) */}
       <section
-        id="main-content"
+        id="variant-j-content"
         ref={heroRef}
         aria-label="교회소개"
         className="relative min-h-[70vh] bg-stone-950 mt-16 md:mt-20 overflow-hidden"

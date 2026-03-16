@@ -7,13 +7,14 @@ import { useBasePath } from "@/contexts/base-path-context";
 
 interface FooterProps {
   basePath?: string;
+  variant?: "default" | "dark";
 }
 
-export function Footer({ basePath: basePathProp }: FooterProps) {
+export function Footer({ basePath: basePathProp, variant = "default" }: FooterProps) {
   const contextBasePath = useBasePath();
   const basePath = basePathProp ?? contextBasePath ?? "";
   return (
-    <footer className="bg-neutral-900 text-white" aria-label="사이트 푸터">
+    <footer className={variant === "dark" ? "bg-stone-950 text-white" : "bg-neutral-900 text-white"} aria-label="사이트 푸터">
       <Container>
         <div className="py-12 md:py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
@@ -119,7 +120,7 @@ export function Footer({ basePath: basePathProp }: FooterProps) {
         </div>
 
         {/* Copyright */}
-        <div className="border-t border-neutral-800 py-6">
+        <div className={variant === "dark" ? "border-t border-stone-800 py-6" : "border-t border-neutral-800 py-6"}>
           <p className="text-center text-sm text-neutral-500">
             © {new Date().getFullYear()} 성락교회. All rights reserved.
           </p>
