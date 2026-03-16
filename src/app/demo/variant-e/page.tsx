@@ -566,8 +566,8 @@ export default function VariantEPage() {
             className="absolute inset-0"
             style={{
               backgroundImage:
-                "radial-gradient(circle at 2px 2px, white 1px, transparent 0)",
-              backgroundSize: "32px 32px",
+                "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+              backgroundSize: "40px 40px",
             }}
           />
         </div>
@@ -596,7 +596,7 @@ export default function VariantEPage() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <Link href="/newcomer">
+              <Link href={`${basePath}/newcomer`}>
                 <Button
                   size="lg"
                   className="bg-white text-primary-600 hover:bg-white/90 shadow-xl group min-h-[44px] h-14 px-8 text-base"
@@ -613,7 +613,6 @@ export default function VariantEPage() {
           </div>
         </Container>
       </section>
-
     </>
   );
 }
