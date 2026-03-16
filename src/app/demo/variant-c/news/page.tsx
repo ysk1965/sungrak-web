@@ -5,9 +5,8 @@ import { useRef, useState, useCallback, type KeyboardEvent } from "react";
 import { ArrowRight, Pin } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { Header } from "@/components/common/header";
-import { Footer } from "@/components/common/footer";
 import { Section } from "@/components/common/section";
+import { CrossNav } from "@/components/common";
 import { Badge } from "@/components/ui/badge";
 import { NewsCard } from "@/components/home";
 import { initialNotices } from "@/mocks/data/initial";
@@ -85,20 +84,11 @@ export default function NewsPage() {
     : tabVariants;
 
   return (
-    <div className="min-h-screen bg-neutral-50">
-      <Header basePath="/demo/variant-c" />
-
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:bg-white focus:text-primary-600 focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg focus:text-sm focus:font-medium"
-      >
-        본문 바로가기
-      </a>
-
+    <>
       {/* Hero Banner */}
       <section
         id="main-content"
-        className="relative h-[40vh] min-h-[300px] pt-16 md:pt-20"
+        className="relative h-[45vh] min-h-[360px] pt-16 md:pt-20 overflow-hidden"
         aria-label="교회 소식 히어로"
       >
         <Image
@@ -112,6 +102,17 @@ export default function NewsPage() {
           className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20"
           aria-hidden="true"
         />
+        <div className="absolute inset-0 opacity-10" aria-hidden="true">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 2px 2px, white 1px, transparent 0)",
+              backgroundSize: "32px 32px",
+            }}
+          />
+        </div>
+
         <div className="absolute inset-0 flex items-center justify-center">
           <motion.div
             initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
@@ -124,13 +125,35 @@ export default function NewsPage() {
             <p className="text-sm text-primary-400 font-medium mb-3 tracking-widest">
               NEWS
             </p>
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3">
               교회 소식
             </h1>
             <p className="text-neutral-200 text-lg">
               성락교회의 소식을 전합니다
             </p>
           </motion.div>
+        </div>
+
+        {/* Floating Elements */}
+        <motion.div
+          initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={
+            prefersReducedMotion ? { duration: 0 } : { delay: 0.6, duration: 0.5 }
+          }
+          className="absolute top-24 right-8 md:right-16 hidden md:block"
+          aria-hidden="true"
+        >
+          <div className="bg-white/15 backdrop-blur-sm rounded-2xl px-4 py-3 flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-sm text-white/90">최신 소식</span>
+          </div>
+        </motion.div>
+
+        <div className="absolute bottom-0 left-0 right-0" aria-hidden="true">
+          <svg viewBox="0 0 1440 60" className="w-full h-8 md:h-12" preserveAspectRatio="none">
+            <path d="M0,60 L0,20 Q720,0 1440,20 L1440,60 Z" fill="white" />
+          </svg>
         </div>
       </section>
 
@@ -147,12 +170,14 @@ export default function NewsPage() {
                 transition={
                   prefersReducedMotion ? { duration: 0 } : { delay: i * 0.1 }
                 }
-                className="bg-primary-50 border border-primary-200 rounded-2xl p-6 md:p-8 group cursor-pointer hover:shadow-lg transition-all"
+                className="bg-gradient-to-r from-primary-50 to-white border border-primary-200 rounded-2xl p-6 md:p-8 group cursor-pointer hover:shadow-xl transition-all relative overflow-hidden"
               >
+                {/* Left accent bar */}
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-amber-500 rounded-l-2xl" aria-hidden="true" />
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-3">
-                      <Badge className="bg-primary-500 text-white hover:bg-primary-600">
+                      <Badge className="bg-gradient-to-r from-primary-500 to-amber-500 text-white hover:from-primary-600 hover:to-amber-600 border-0">
                         <Pin size={12} className="mr-1" aria-hidden="true" />
                         고정
                       </Badge>
@@ -258,8 +283,14 @@ export default function NewsPage() {
               </div>
             ) : (
               <div className="text-center py-16">
-                <p className="text-neutral-500">
+                <div className="w-16 h-16 rounded-2xl bg-neutral-200 flex items-center justify-center mx-auto mb-4">
+                  <Pin size={28} className="text-neutral-400" />
+                </div>
+                <p className="text-neutral-500 font-medium mb-1">
                   해당 카테고리의 소식이 없습니다
+                </p>
+                <p className="text-neutral-400 text-sm">
+                  다른 카테고리를 선택해 주세요
                 </p>
               </div>
             )}
@@ -267,21 +298,7 @@ export default function NewsPage() {
         </AnimatePresence>
       </Section>
 
-      <Footer basePath="/demo/variant-c" />
-
-      <Link
-        href="/"
-        className="fixed bottom-6 right-6 z-50 bg-neutral-900 text-white px-4 py-2 rounded-full shadow-lg hover:bg-neutral-800 transition-colors text-sm group min-h-[44px] flex items-center"
-        aria-label="시안 선택 페이지로 돌아가기"
-      >
-        <span
-          className="group-hover:-translate-x-1 inline-block transition-transform"
-          aria-hidden="true"
-        >
-          ←
-        </span>{" "}
-        시안 선택
-      </Link>
-    </div>
+      <CrossNav basePath="/demo/variant-c" currentPage="news" />
+    </>
   );
 }

@@ -17,6 +17,7 @@ import {
   Moon,
   Sun,
   BookOpen,
+  Heart,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -148,8 +149,8 @@ export default function WorshipPage() {
           <div className="absolute inset-0 bg-gradient-to-r from-neutral-900/85 via-neutral-900/60 to-neutral-900/30" />
         </motion.div>
 
-        <Container className="relative z-10 h-full flex items-center justify-center">
-          <motion.div style={{ y: textY, opacity }} className="text-center">
+        <Container className="relative z-10 h-full flex items-center">
+          <motion.div style={{ y: textY, opacity }}>
             <motion.div
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -487,6 +488,106 @@ export default function WorshipPage() {
               aria-hidden="true"
             />
           </motion.div>
+        </Container>
+      </section>
+
+      {/* Section 5: 새가족 환영 CTA */}
+      <section
+        className="relative py-24 md:py-32 overflow-hidden"
+        aria-label="새가족 환영 안내"
+      >
+        {/* Background image with overlay */}
+        <div className="absolute inset-0" aria-hidden="true">
+          <Image
+            src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?q=80&w=2070"
+            alt=""
+            fill
+            className="object-cover"
+            aria-hidden="true"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-neutral-900/90 via-neutral-900/80 to-neutral-900/70" />
+        </div>
+
+        {/* Decorative radial glow */}
+        <div
+          className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-amber-500/15 rounded-full blur-[120px]"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute -bottom-40 -left-40 w-[400px] h-[400px] bg-primary-500/10 rounded-full blur-[100px]"
+          aria-hidden="true"
+        />
+
+        <Container className="relative z-10">
+          <div className="max-w-2xl mx-auto text-center">
+            <motion.div
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={
+                shouldReduceMotion ? { duration: 0 } : { delay: 0.1 }
+              }
+            >
+              <Badge className="bg-amber-500/20 text-amber-300 border-amber-400/30 mb-4">
+                <Heart size={12} className="mr-1" aria-hidden="true" />
+                New Family
+              </Badge>
+            </motion.div>
+
+            <motion.h2
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={
+                shouldReduceMotion
+                  ? { duration: 0 }
+                  : { delay: 0.2, duration: 0.8 }
+              }
+              className="text-3xl md:text-4xl font-bold mb-4"
+            >
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-amber-400">
+                처음 오시는 분을 환영합니다
+              </span>
+            </motion.h2>
+
+            <motion.p
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={
+                shouldReduceMotion ? { duration: 0 } : { delay: 0.3 }
+              }
+              className="text-white/70 text-lg leading-relaxed mb-8"
+            >
+              성락교회는 처음 방문하시는 모든 분을 따뜻하게 맞이합니다.
+              <br />
+              새가족 안내를 통해 편안하게 교회 생활을 시작해 보세요.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={
+                shouldReduceMotion ? { duration: 0 } : { delay: 0.4 }
+              }
+            >
+              <Link href="/demo/variant-d/newcomer">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-primary-500 to-amber-500 hover:from-primary-600 hover:to-amber-600 text-white shadow-lg shadow-primary-500/25 group min-h-[44px]"
+                >
+                  <Heart size={18} aria-hidden="true" />
+                  새가족 안내 보기
+                  <ArrowRight
+                    size={18}
+                    className="group-hover:translate-x-1 motion-reduce:transition-none transition-transform"
+                    aria-hidden="true"
+                  />
+                </Button>
+              </Link>
+            </motion.div>
+          </div>
         </Container>
       </section>
     </>

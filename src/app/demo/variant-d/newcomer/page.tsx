@@ -23,6 +23,8 @@ import {
   ChevronDown,
   CheckCircle,
   Phone,
+  Mail,
+  MessageCircle,
   Train,
 } from "lucide-react";
 import Link from "next/link";
@@ -144,6 +146,7 @@ export default function NewcomerPage() {
   const shouldReduceMotion = useReducedMotion();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [contactMethod, setContactMethod] = useState<"phone" | "email" | "kakao">("phone");
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -631,6 +634,35 @@ export default function NewcomerPage() {
                         </p>
                       )}
                     </div>
+
+                    {/* Preferred contact method */}
+                    <fieldset>
+                      <legend className="block text-sm font-medium text-neutral-700 mb-2">
+                        선호 연락 방법
+                      </legend>
+                      <div className="flex gap-3">
+                        {([
+                          { value: "phone" as const, label: "전화", icon: Phone },
+                          { value: "email" as const, label: "이메일", icon: Mail },
+                          { value: "kakao" as const, label: "카카오톡", icon: MessageCircle },
+                        ]).map((option) => (
+                          <button
+                            key={option.value}
+                            type="button"
+                            onClick={() => setContactMethod(option.value)}
+                            className={`rounded-full px-5 py-2.5 min-h-[44px] flex items-center gap-2 text-sm font-medium transition-all ${
+                              contactMethod === option.value
+                                ? "bg-primary-500 text-white shadow-lg shadow-primary-500/25"
+                                : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
+                            }`}
+                            aria-pressed={contactMethod === option.value}
+                          >
+                            <option.icon size={16} aria-hidden="true" />
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
+                    </fieldset>
 
                     {/* Message - full width */}
                     <div>

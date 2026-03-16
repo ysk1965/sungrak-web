@@ -12,7 +12,6 @@ import {
 import { useBasePath } from "@/contexts/base-path-context";
 import { Header } from "@/components/common/header";
 import { Footer } from "@/components/common/footer";
-import { Container } from "@/components/common";
 import { Section, SectionHeader } from "@/components/common/section";
 import { PageHero } from "@/components/variant-a/page-hero";
 import { Breadcrumb } from "@/components/variant-a/breadcrumb";
@@ -44,11 +43,9 @@ export default function AboutPage() {
       />
 
       {/* 2. Breadcrumb */}
-      <div className="bg-white border-b border-neutral-100">
-        <Container>
-          <Breadcrumb items={[{ label: "교회소개" }]} />
-        </Container>
-      </div>
+      <Section background="white" padding="sm">
+        <Breadcrumb items={[{ label: "교회소개" }]} />
+      </Section>
 
       {/* 3. 담임목사 인사말 */}
       <Section background="white" padding="xl" aria-label="담임목사 인사말">
@@ -106,14 +103,25 @@ export default function AboutPage() {
       {/* 4. 비전 (Vision) */}
       <Section background="gray" padding="xl" aria-label="교회 비전">
         <FadeInUp>
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-300 to-primary-500">
+          <div className="max-w-3xl mx-auto text-center relative">
+            {/* Decorative Quote Mark */}
+            <div
+              className="text-[120px] text-primary-200/40 font-serif leading-none select-none absolute -top-10 left-1/2 -translate-x-1/2"
+              aria-hidden="true"
+            >
+              ✦
+            </div>
+
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 relative z-10">
+              <span
+                className="text-transparent bg-clip-text bg-gradient-to-r from-primary-300 to-primary-500"
+                style={{ filter: "drop-shadow(0 0 24px rgba(var(--color-primary-400), 0.3))" }}
+              >
                 {vision.title}
               </span>
             </h2>
 
-            <p className="text-lg text-neutral-600 leading-relaxed mb-12">
+            <p className="text-lg text-neutral-600 leading-relaxed mb-12 relative z-10">
               {vision.content}
             </p>
           </div>
@@ -231,6 +239,11 @@ export default function AboutPage() {
           <SectionHeader title="조직" subtitle="교회 조직 구성" />
         </FadeInUp>
 
+        {/* Decorative gold divider */}
+        <div className="flex justify-center mb-8" aria-hidden="true">
+          <div className="w-24 h-px bg-gradient-to-r from-transparent via-primary-400 to-transparent" />
+        </div>
+
         <FadeInUp delay={0.1}>
           <p className="text-center text-neutral-600 leading-relaxed mb-12 max-w-2xl mx-auto">
             {organization.content}
@@ -239,7 +252,17 @@ export default function AboutPage() {
 
         {/* Organization Hierarchy Placeholder */}
         <FadeInUp delay={0.2}>
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-3xl mx-auto relative">
+            {/* Subtle background pattern */}
+            <div
+              className="absolute inset-0 opacity-[0.03] pointer-events-none"
+              style={{
+                backgroundImage:
+                  "radial-gradient(circle, var(--color-primary-500) 1px, transparent 1px)",
+                backgroundSize: "24px 24px",
+              }}
+              aria-hidden="true"
+            />
             {/* 담임목사 - Top */}
             <div className="flex justify-center mb-6">
               <div className="bg-primary-500 text-white px-8 py-4 rounded-xl shadow-lg text-center min-h-[44px] flex items-center">
@@ -373,14 +396,55 @@ export default function AboutPage() {
 
             {/* Map Placeholder */}
             <FadeInUp delay={0.2}>
-              <div className="aspect-[4/3] bg-neutral-100 rounded-2xl border border-neutral-200 overflow-hidden relative shadow-sm">
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-neutral-400">
-                  <MapPin size={48} className="mb-3" aria-hidden="true" />
-                  <p className="font-medium text-neutral-500">지도 영역</p>
-                  <p className="text-sm text-neutral-400 mt-1">
-                    {location.coordinates.lat}, {location.coordinates.lng}
+              <div className="aspect-[4/3] rounded-2xl overflow-hidden relative shadow-lg group">
+                {/* Static map-like background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-neutral-200 via-neutral-100 to-neutral-200">
+                  {/* Grid pattern to simulate map */}
+                  <div
+                    className="absolute inset-0 opacity-[0.15]"
+                    style={{
+                      backgroundImage:
+                        "linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px)",
+                      backgroundSize: "40px 40px",
+                    }}
+                    aria-hidden="true"
+                  />
+                  {/* Simulated roads */}
+                  <div
+                    className="absolute inset-0 opacity-[0.08]"
+                    style={{
+                      backgroundImage:
+                        "linear-gradient(45deg, transparent 30%, rgba(0,0,0,0.15) 30%, rgba(0,0,0,0.15) 31%, transparent 31%), linear-gradient(-20deg, transparent 60%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.1) 61%, transparent 61%)",
+                    }}
+                    aria-hidden="true"
+                  />
+                </div>
+
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/40 via-transparent to-transparent" />
+
+                {/* Center pin and label */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <div className="relative mb-4">
+                    <div className="w-4 h-4 rounded-full bg-primary-500 shadow-lg ring-4 ring-primary-500/20 animate-pulse" />
+                  </div>
+                  <p className="text-sm font-medium text-neutral-600 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm">
+                    {location.coordinates.lat.toFixed(4)}, {location.coordinates.lng.toFixed(4)}
                   </p>
                 </div>
+
+                {/* Open map button overlay */}
+                <a
+                  href={`https://map.naver.com/v5/search/${encodeURIComponent(location.address)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="absolute bottom-4 left-1/2 -translate-x-1/2 inline-flex items-center gap-2 bg-white/90 backdrop-blur-sm hover:bg-white text-neutral-800 px-5 py-2.5 rounded-full shadow-md hover:shadow-lg transition-all text-sm font-medium min-h-[44px]"
+                  aria-label="네이버 지도에서 위치 보기 (새 탭에서 열림)"
+                >
+                  <MapPin size={16} className="text-primary-500" aria-hidden="true" />
+                  지도에서 보기
+                  <ArrowRight size={14} aria-hidden="true" />
+                </a>
               </div>
             </FadeInUp>
           </div>
@@ -395,7 +459,7 @@ export default function AboutPage() {
         className="fixed bottom-6 right-6 z-50 bg-neutral-900 text-white px-4 py-2 rounded-full shadow-lg hover:bg-neutral-800 transition-colors text-sm font-medium min-h-[44px] flex items-center"
         aria-label="시안 선택 페이지로 돌아가기"
       >
-        &larr; 시안 선택
+        ← 시안 선택
       </Link>
     </div>
   );

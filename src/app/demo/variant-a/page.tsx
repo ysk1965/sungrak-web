@@ -161,32 +161,38 @@ export default function VariantAPage() {
               size="lg"
               className="bg-primary-500 hover:bg-primary-600 text-white group relative overflow-hidden min-h-[44px]"
               aria-label="실시간 예배 참여하기"
+              asChild
             >
-              <span className="relative z-10 flex items-center gap-2">
-                <Play size={20} aria-hidden="true" />
-                실시간 예배
-              </span>
-              <motion.div
-                className="absolute inset-0 bg-primary-400"
-                initial={{ x: "-100%" }}
-                whileHover={shouldReduceMotion ? undefined : { x: 0 }}
-                transition={
-                  shouldReduceMotion ? reducedTransition : { duration: 0.3 }
-                }
-                aria-hidden="true"
-              />
+              <Link href={`${basePath}/worship`}>
+                <span className="relative z-10 flex items-center gap-2">
+                  <Play size={20} aria-hidden="true" />
+                  실시간 예배
+                </span>
+                <motion.div
+                  className="absolute inset-0 bg-primary-400"
+                  initial={{ x: "-100%" }}
+                  whileHover={shouldReduceMotion ? undefined : { x: 0 }}
+                  transition={
+                    shouldReduceMotion ? reducedTransition : { duration: 0.3 }
+                  }
+                  aria-hidden="true"
+                />
+              </Link>
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm min-h-[44px]"
+              className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm min-h-[44px] group"
+              asChild
             >
-              교회 소개
-              <ArrowRight
-                size={16}
-                className="ml-2 group-hover:translate-x-1 transition-transform"
-                aria-hidden="true"
-              />
+              <Link href={`${basePath}/about`}>
+                교회 소개
+                <ArrowRight
+                  size={16}
+                  className="ml-2 group-hover:translate-x-1 transition-transform"
+                  aria-hidden="true"
+                />
+              </Link>
             </Button>
           </motion.div>
 

@@ -173,7 +173,7 @@ export default function VariantBPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
+      <Header basePath="/demo/variant-b" />
 
       {/* Hero Section - Enhanced Image Slider */}
       <section
@@ -789,7 +789,7 @@ export default function VariantBPage() {
         </div>
       </Section>
 
-      <Footer />
+      <Footer basePath="/demo/variant-b" />
 
       {/* Back to Demo Selection */}
       <Link

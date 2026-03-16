@@ -17,12 +17,12 @@ import {
   Send,
   CheckCircle,
   ArrowRight,
+  Clock,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { Header } from "@/components/common/header";
-import { Footer } from "@/components/common/footer";
 import { Section } from "@/components/common/section";
+import { Container, CrossNav } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -139,20 +139,11 @@ export default function NewcomerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50">
-      <Header basePath="/demo/variant-c" />
-
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:bg-white focus:text-primary-600 focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg focus:text-sm focus:font-medium"
-      >
-        본문 바로가기
-      </a>
-
+    <>
       {/* Hero Banner */}
       <section
         id="main-content"
-        className="relative h-[40vh] min-h-[300px] pt-16 md:pt-20"
+        className="relative h-[45vh] min-h-[360px] pt-16 md:pt-20 overflow-hidden"
         aria-label="새가족 안내 히어로"
       >
         <Image
@@ -166,6 +157,17 @@ export default function NewcomerPage() {
           className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20"
           aria-hidden="true"
         />
+        <div className="absolute inset-0 opacity-10" aria-hidden="true">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 2px 2px, white 1px, transparent 0)",
+              backgroundSize: "32px 32px",
+            }}
+          />
+        </div>
+
         <div className="absolute inset-0 flex items-center justify-center">
           <motion.div
             initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
@@ -178,7 +180,7 @@ export default function NewcomerPage() {
             <p className="text-sm text-primary-400 font-medium mb-3 tracking-widest">
               WELCOME
             </p>
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3">
               새가족 안내
             </h1>
             <p className="text-neutral-200 text-lg">
@@ -186,6 +188,75 @@ export default function NewcomerPage() {
             </p>
           </motion.div>
         </div>
+
+        {/* Floating Elements */}
+        <motion.div
+          initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={
+            prefersReducedMotion ? { duration: 0 } : { delay: 0.6, duration: 0.5 }
+          }
+          className="absolute top-24 right-8 md:right-16 hidden md:block"
+          aria-hidden="true"
+        >
+          <div className="bg-gradient-to-br from-primary-500/80 to-amber-500/80 backdrop-blur-sm text-white p-4 rounded-2xl shadow-xl">
+            <UserPlus size={28} />
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={prefersReducedMotion ? false : { opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={
+            prefersReducedMotion ? { duration: 0 } : { delay: 0.8, duration: 0.5 }
+          }
+          className="absolute bottom-20 left-8 md:left-16 hidden md:block"
+          aria-hidden="true"
+        >
+          <div className="flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-4 py-2">
+            <Users size={16} className="text-primary-400" />
+            <span className="text-sm text-white/90">따뜻한 환영</span>
+          </div>
+        </motion.div>
+
+        <div className="absolute bottom-0 left-0 right-0" aria-hidden="true">
+          <svg viewBox="0 0 1440 60" className="w-full h-8 md:h-12" preserveAspectRatio="none">
+            <path d="M0,60 L0,20 Q720,0 1440,20 L1440,60 Z" fill="white" />
+          </svg>
+        </div>
+      </section>
+
+      {/* Quick Info Bar */}
+      <section className="bg-neutral-900 text-white py-4" aria-label="교회 기본 정보">
+        <Container>
+          <div className="flex flex-wrap justify-center md:justify-between items-center gap-6 text-sm">
+            {[
+              { icon: Clock, text: "주일예배 7:00 / 9:30 / 11:30" },
+              { icon: MapPin, text: "서울시 구로구 신도림로 56-24" },
+              { icon: Phone, text: "070-7300-6200" },
+            ].map((item, i) => (
+              <motion.div
+                key={item.text}
+                initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={
+                  prefersReducedMotion ? { duration: 0 } : { delay: i * 0.1 }
+                }
+                className="flex items-center gap-2 group cursor-pointer"
+              >
+                <item.icon
+                  size={16}
+                  className="text-primary-400 group-hover:scale-110 transition-transform"
+                  aria-hidden="true"
+                />
+                <span className="group-hover:text-primary-400 transition-colors">
+                  {item.text}
+                </span>
+              </motion.div>
+            ))}
+          </div>
+        </Container>
       </section>
 
       {/* Visit Steps */}
@@ -202,7 +273,12 @@ export default function NewcomerPage() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+          {/* Connection Lines (desktop) */}
+          <div className="absolute top-12 left-0 right-0 hidden lg:block" aria-hidden="true">
+            <div className="mx-auto max-w-[calc(100%-8rem)] h-0.5 bg-gradient-to-r from-blue-200 via-emerald-200 via-violet-200 to-rose-200" />
+          </div>
+
           {steps.map((step, i) => (
             <motion.div
               key={step.title}
@@ -213,6 +289,7 @@ export default function NewcomerPage() {
                 prefersReducedMotion ? { duration: 0 } : { delay: i * 0.15 }
               }
               whileHover={prefersReducedMotion ? {} : { y: -5, scale: 1.02 }}
+              className="relative"
             >
               <Card className="hover:shadow-xl transition-all duration-300 overflow-hidden group border-0 shadow-md h-full">
                 <CardContent className="p-6 relative">
@@ -222,7 +299,7 @@ export default function NewcomerPage() {
                   />
                   <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="w-8 h-8 rounded-full bg-primary-500 text-white text-sm font-bold flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-amber-500 text-white text-sm font-bold flex items-center justify-center shadow-lg shadow-primary-500/25">
                         {i + 1}
                       </div>
                       <div
@@ -241,6 +318,13 @@ export default function NewcomerPage() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Arrow connector between cards (mobile/tablet) */}
+              {i < steps.length - 1 && (
+                <div className="flex justify-center py-2 lg:hidden" aria-hidden="true">
+                  <ArrowRight size={20} className="text-primary-300 rotate-90" />
+                </div>
+              )}
             </motion.div>
           ))}
         </div>
@@ -582,21 +666,7 @@ export default function NewcomerPage() {
         </div>
       </Section>
 
-      <Footer basePath="/demo/variant-c" />
-
-      <Link
-        href="/"
-        className="fixed bottom-6 right-6 z-50 bg-neutral-900 text-white px-4 py-2 rounded-full shadow-lg hover:bg-neutral-800 transition-colors text-sm group min-h-[44px] flex items-center"
-        aria-label="시안 선택 페이지로 돌아가기"
-      >
-        <span
-          className="group-hover:-translate-x-1 inline-block transition-transform"
-          aria-hidden="true"
-        >
-          ←
-        </span>{" "}
-        시안 선택
-      </Link>
-    </div>
+      <CrossNav basePath="/demo/variant-c" currentPage="newcomer" />
+    </>
   );
 }

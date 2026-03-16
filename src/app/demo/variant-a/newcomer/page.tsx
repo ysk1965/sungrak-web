@@ -209,15 +209,15 @@ export default function NewcomerPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {steps.map((step) => (
               <StaggerItem key={step.number}>
-                <div className="relative z-10 flex flex-col items-center text-center">
+                <div className="relative z-10 flex flex-col items-center text-center p-4 rounded-2xl hover:bg-white hover:shadow-md hover:-translate-y-1 hover:border-primary-200 border border-transparent transition-all duration-300 group">
                   {/* Step Number */}
-                  <div className="w-12 h-12 rounded-full bg-primary-500 text-white font-bold text-lg flex items-center justify-center mb-4 shadow-lg">
+                  <div className="w-12 h-12 rounded-full bg-primary-500 text-white font-bold text-lg flex items-center justify-center mb-4 shadow-lg group-hover:bg-primary-600 group-hover:shadow-xl transition-all duration-300">
                     {step.number}
                   </div>
                   {/* Icon */}
-                  <div className="w-16 h-16 rounded-xl bg-white shadow-md flex items-center justify-center mb-4">
+                  <div className="w-16 h-16 rounded-xl bg-white shadow-md flex items-center justify-center mb-4 group-hover:shadow-lg transition-shadow duration-300">
                     <step.icon
-                      className="w-8 h-8 text-primary-500"
+                      className="w-8 h-8 text-primary-500 group-hover:text-primary-600 transition-colors duration-300"
                       aria-hidden="true"
                     />
                   </div>
@@ -280,12 +280,21 @@ export default function NewcomerPage() {
                   aria-live="polite"
                   className="flex flex-col items-center justify-center text-center p-12 rounded-2xl bg-primary-50 border border-primary-100"
                 >
-                  <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-6">
+                  <motion.div
+                    className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-6"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: [0, 1.2, 1] }}
+                    transition={
+                      shouldReduceMotion
+                        ? reducedTransition
+                        : { duration: 0.5, ease: "easeOut" }
+                    }
+                  >
                     <Check
                       className="w-8 h-8 text-green-600"
                       aria-hidden="true"
                     />
-                  </div>
+                  </motion.div>
                   <h3 className="text-2xl font-bold text-neutral-900 mb-2">
                     문의가 접수되었습니다
                   </h3>
@@ -462,6 +471,9 @@ export default function NewcomerPage() {
 
         <FadeInUp>
           <div className="max-w-3xl mx-auto">
+            <p className="text-sm text-neutral-400 text-center mb-6">
+              궁금한 내용을 클릭해보세요
+            </p>
             {faqItems.map((item, index) => (
               <div
                 key={index}

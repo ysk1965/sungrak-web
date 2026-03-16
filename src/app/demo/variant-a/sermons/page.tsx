@@ -49,6 +49,9 @@ export default function SermonsPage() {
       ? allSermons
       : allSermons.filter((sermon) => sermon.playlist === activeTab);
 
+  const featuredSermon = filteredSermons[0];
+  const gridSermons = filteredSermons.slice(1);
+
   return (
     <div className="min-h-screen bg-white">
       <Header variant="transparent" basePath={basePath} />
@@ -66,49 +69,76 @@ export default function SermonsPage() {
         <Breadcrumb items={[{ label: "설교" }]} />
       </Section>
 
-      {/* Filter + Search + Sermon Grid */}
-      <Section background="white" padding="xl" aria-label="설교 목록">
-        <FadeInUp>
-          {/* Filter Tabs + Search */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-10">
-            {/* Pill Filter Buttons */}
-            <div
-              className="flex flex-wrap gap-2"
-              role="tablist"
-              aria-label="설교 분류 필터"
-            >
-              {filterTabs.map((tab) => (
-                <button
-                  key={tab.value}
-                  role="tab"
-                  aria-selected={activeTab === tab.value}
-                  onClick={() => setActiveTab(tab.value)}
-                  className={`px-5 py-2 rounded-full text-sm font-medium transition-colors min-h-[44px] ${
-                    activeTab === tab.value
-                      ? "bg-primary-500 text-white"
-                      : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
+      {/* Featured Sermon */}
+      {featuredSermon && (
+        <Section background="white" padding="xl" aria-label="주요 설교">
+          <FadeInUp>
+            <h2 className="text-2xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
+                최신 설교
+              </span>
+            </h2>
+            <SermonCard sermon={featuredSermon} variant="featured" />
+          </FadeInUp>
+        </Section>
+      )}
 
-            {/* Search Input */}
-            <div className="relative w-full md:w-72">
-              <Search
-                size={18}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"
-                aria-hidden="true"
-              />
-              <Input
-                type="text"
-                placeholder="설교 검색..."
-                className="pl-10 min-h-[44px]"
-                aria-label="설교 검색"
-              />
+      {/* Filter + Search + Sermon Grid */}
+      <Section background="gray" padding="xl" aria-label="설교 목록">
+        <FadeInUp>
+          {/* Filter & Search Container */}
+          <div className="bg-white/80 backdrop-blur border border-neutral-200 rounded-2xl shadow-sm p-6 mb-10">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              {/* Pill Filter Buttons */}
+              <div
+                className="flex flex-wrap gap-2"
+                role="tablist"
+                aria-label="설교 분류 필터"
+              >
+                {filterTabs.map((tab) => (
+                  <button
+                    key={tab.value}
+                    role="tab"
+                    aria-selected={activeTab === tab.value}
+                    onClick={() => setActiveTab(tab.value)}
+                    className={`px-5 py-2 rounded-full text-sm font-medium transition-colors min-h-[44px] ${
+                      activeTab === tab.value
+                        ? "bg-primary-500 text-white shadow-md"
+                        : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Search Input */}
+              <div className="relative w-full md:w-72">
+                <Search
+                  size={18}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"
+                  aria-hidden="true"
+                />
+                <Input
+                  type="text"
+                  placeholder="설교 검색..."
+                  className="pl-10 min-h-[44px]"
+                  aria-label="설교 검색"
+                />
+              </div>
             </div>
           </div>
+        </FadeInUp>
+
+        {/* Results Count */}
+        <FadeInUp>
+          <p className="text-sm text-neutral-500 mb-6">
+            총{" "}
+            <span className="font-semibold text-primary-600">
+              {filteredSermons.length}
+            </span>
+            편의 설교
+          </p>
         </FadeInUp>
 
         {/* Sermon Grid */}
@@ -125,7 +155,7 @@ export default function SermonsPage() {
             }
           >
             <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredSermons.map((sermon) => (
+              {gridSermons.map((sermon) => (
                 <StaggerItem key={sermon.id}>
                   <SermonCard sermon={sermon} variant="default" />
                 </StaggerItem>
@@ -143,9 +173,18 @@ export default function SermonsPage() {
 
         {/* Load More Button */}
         <div className="text-center mt-12">
-          <Button variant="outline" className="min-h-[44px] px-8">
-            더 보기
-          </Button>
+          <motion.div
+            whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
+            whileTap={shouldReduceMotion ? {} : { scale: 0.97 }}
+            className="inline-block"
+          >
+            <Button
+              variant="outline"
+              className="min-h-[44px] px-8 rounded-full border-primary-500 text-primary-600 hover:bg-primary-50 shadow-sm"
+            >
+              더 보기
+            </Button>
+          </motion.div>
         </div>
       </Section>
 
@@ -157,7 +196,7 @@ export default function SermonsPage() {
         className="fixed bottom-6 right-6 z-50 bg-neutral-900 text-white px-4 py-2 rounded-full shadow-lg hover:bg-neutral-800 transition-colors text-sm font-medium min-h-[44px] flex items-center"
         aria-label="시안 선택 페이지로 돌아가기"
       >
-        ← 시안 선택
+        &larr; 시안 선택
       </Link>
     </div>
   );

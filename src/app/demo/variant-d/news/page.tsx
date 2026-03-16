@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useCallback } from "react";
 import {
   motion,
   useScroll,
   useTransform,
   useReducedMotion,
 } from "framer-motion";
-import { Eye, Pin } from "lucide-react";
+import { Eye, Pin, Calendar, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { Container } from "@/components/common";
 import { Section } from "@/components/common/section";
@@ -124,6 +124,7 @@ const INITIAL_VISIBLE = 6;
 
 export default function VariantDNewsPage() {
   const heroRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const shouldReduceMotion = useReducedMotion();
 
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>("all");
@@ -180,6 +181,34 @@ export default function VariantDNewsPage() {
     setVisibleCount((prev) => prev + 6);
   }
 
+  const handleTabKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+      let nextIndex: number | null = null;
+      if (e.key === "ArrowRight") {
+        nextIndex = (index + 1) % tabs.length;
+      } else if (e.key === "ArrowLeft") {
+        nextIndex = (index - 1 + tabs.length) % tabs.length;
+      } else if (e.key === "Home") {
+        nextIndex = 0;
+      } else if (e.key === "End") {
+        nextIndex = tabs.length - 1;
+      }
+
+      if (nextIndex !== null) {
+        e.preventDefault();
+        tabRefs.current[nextIndex]?.focus();
+        handleCategoryChange(tabs[nextIndex].key);
+      }
+    },
+    [],
+  );
+
+  /* ----- featured pinned notice (global, ignores filter) ----- */
+  const featuredNotice = useMemo(
+    () => allNotices.find((n) => n.isPinned),
+    [],
+  );
+
   /* ---------------------------------------------------------------- */
   /*  Render                                                          */
   /* ---------------------------------------------------------------- */
@@ -191,7 +220,7 @@ export default function VariantDNewsPage() {
       {/* ============================================================ */}
       <section
         ref={heroRef}
-        className="relative h-[35vh] mt-16 md:mt-20 overflow-hidden"
+        className="relative h-[40vh] min-h-[300px] mt-16 md:mt-20 overflow-hidden"
         aria-label="교회 소식 히어로 배너"
       >
         <motion.div
@@ -265,6 +294,93 @@ export default function VariantDNewsPage() {
       </section>
 
       {/* ============================================================ */}
+      {/* Featured / Latest Pinned Notice                              */}
+      {/* ============================================================ */}
+      {featuredNotice && (
+        <Section background="white" padding="lg" aria-label="주요 소식">
+          <motion.div
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={
+              shouldReduceMotion
+                ? { duration: 0 }
+                : { delay: 0.1, duration: 0.6 }
+            }
+          >
+            <article className="relative overflow-hidden rounded-2xl bg-white shadow-xl border border-neutral-100">
+              {/* Top gradient bar */}
+              <div
+                className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 via-primary-400 to-amber-400"
+                aria-hidden="true"
+              />
+
+              {/* Subtle background pattern */}
+              <div
+                className="absolute inset-0 opacity-[0.03]"
+                aria-hidden="true"
+                style={{
+                  backgroundImage:
+                    "radial-gradient(circle at 20% 50%, rgba(var(--primary-500), 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(251, 191, 36, 0.2) 0%, transparent 40%)",
+                }}
+              />
+
+              <div className="relative z-10 p-8 md:p-12">
+                <div className="flex flex-wrap items-center gap-3 mb-5">
+                  <Badge className="bg-primary-500/10 text-primary-600 border-primary-300/30">
+                    <Pin size={12} className="mr-1" aria-hidden="true" />
+                    Featured
+                  </Badge>
+                  <Badge
+                    variant="secondary"
+                    className="bg-amber-50 text-amber-700 border-amber-200/50"
+                  >
+                    {categoryLabels[featuredNotice.category]}
+                  </Badge>
+                </div>
+
+                <h2 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-4 leading-snug">
+                  {featuredNotice.title}
+                </h2>
+
+                <div className="flex flex-wrap items-center gap-5 text-sm text-neutral-500 mb-6">
+                  <span className="flex items-center gap-1.5">
+                    <Calendar size={14} aria-hidden="true" />
+                    <time dateTime={featuredNotice.createdAt}>
+                      {formatDate(featuredNotice.createdAt)}
+                    </time>
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <Eye size={14} aria-hidden="true" />
+                    <span aria-label={`조회수 ${featuredNotice.viewCount}`}>
+                      {featuredNotice.viewCount.toLocaleString()}회
+                    </span>
+                  </span>
+                </div>
+
+                <motion.div
+                  whileHover={shouldReduceMotion ? undefined : { x: 4 }}
+                  className="inline-flex"
+                >
+                  <Button
+                    variant="outline"
+                    className="group border-primary-200 text-primary-600 hover:bg-primary-50 hover:border-primary-300"
+                  >
+                    자세히 보기
+                    <ArrowRight
+                      size={16}
+                      className="ml-2 transition-transform group-hover:translate-x-0.5"
+                      aria-hidden="true"
+                    />
+                  </Button>
+                </motion.div>
+              </div>
+            </article>
+          </motion.div>
+        </Section>
+      )}
+
+      {/* ============================================================ */}
       {/* Category Tabs + Pinned Notice + News Grid                    */}
       {/* ============================================================ */}
       <Section background="white" padding="xl" aria-label="교회 소식 목록">
@@ -281,14 +397,19 @@ export default function VariantDNewsPage() {
             aria-label="소식 카테고리 필터"
             className="flex flex-wrap gap-2"
           >
-            {tabs.map((tab) => {
+            {tabs.map((tab, index) => {
               const isActive = activeCategory === tab.key;
               return (
                 <button
                   key={tab.key}
+                  ref={(el) => {
+                    tabRefs.current[index] = el;
+                  }}
                   role="tab"
                   aria-selected={isActive}
+                  tabIndex={isActive ? 0 : -1}
                   onClick={() => handleCategoryChange(tab.key)}
+                  onKeyDown={(e) => handleTabKeyDown(e, index)}
                   className={`
                     px-5 py-2.5 rounded-full text-sm font-medium
                     transition-all duration-200 min-h-[44px] min-w-[44px]

@@ -7,7 +7,7 @@ import {
   useTransform,
   useReducedMotion,
 } from "framer-motion";
-import { Play, ArrowRight, Eye, Clock } from "lucide-react";
+import { Play, ArrowRight, Eye, Clock, Search, X } from "lucide-react";
 import Image from "next/image";
 import { Container } from "@/components/common";
 import { Section } from "@/components/common/section";
@@ -134,6 +134,7 @@ export default function VariantDSermonsPage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(6);
 
   const { scrollYProgress } = useScroll({
@@ -160,11 +161,23 @@ export default function VariantDSermonsPage() {
   const featuredSermon = allSermons[0];
 
   const filteredSermons = useMemo(() => {
-    if (activeFilter === "all") return remainingSermons;
-    return remainingSermons.filter(
-      (sermon) => sermon.playlist === activeFilter,
-    );
-  }, [activeFilter]);
+    let sermons = remainingSermons;
+    if (activeFilter !== "all") {
+      sermons = sermons.filter(
+        (sermon) => sermon.playlist === activeFilter,
+      );
+    }
+    if (searchQuery.trim()) {
+      const query = searchQuery.trim().toLowerCase();
+      sermons = sermons.filter(
+        (sermon) =>
+          sermon.title.toLowerCase().includes(query) ||
+          sermon.preacher.toLowerCase().includes(query) ||
+          (sermon.description && sermon.description.toLowerCase().includes(query)),
+      );
+    }
+    return sermons;
+  }, [activeFilter, searchQuery]);
 
   const visibleSermons = filteredSermons.slice(0, visibleCount);
   const hasMore = filteredSermons.length > visibleCount;
@@ -422,12 +435,12 @@ export default function VariantDSermonsPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={shouldReduceMotion ? { duration: 0 } : undefined}
-          className="mb-10"
+          className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10"
         >
           <div
             role="tablist"
             aria-label="설교 카테고리 필터"
-            className="flex flex-wrap gap-2 justify-center"
+            className="flex flex-wrap gap-2 justify-center sm:justify-start"
           >
             {filterTabs.map((tab) => (
               <button
@@ -458,6 +471,24 @@ export default function VariantDSermonsPage() {
                 )}
               </button>
             ))}
+          </div>
+          <div className="relative max-w-sm w-full">
+            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" />
+            <input
+              type="search"
+              placeholder="설교 제목, 설교자 검색..."
+              value={searchQuery}
+              onChange={(e) => { setSearchQuery(e.target.value); setVisibleCount(6); }}
+              className="w-full pl-11 pr-10 py-2.5 rounded-full border border-neutral-200 bg-white text-sm
+                         focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500
+                         min-h-[44px] transition-all"
+              aria-label="설교 검색"
+            />
+            {searchQuery && (
+              <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600" aria-label="검색어 지우기">
+                <X size={16} />
+              </button>
+            )}
           </div>
         </motion.div>
 
@@ -564,7 +595,7 @@ export default function VariantDSermonsPage() {
               <Play size={28} className="text-neutral-300" />
             </div>
             <p className="text-neutral-500 text-lg">
-              해당 카테고리의 설교가 없습니다.
+              {searchQuery ? "검색 결과가 없습니다" : "해당 카테고리의 설교가 없습니다."}
             </p>
           </motion.div>
         )}

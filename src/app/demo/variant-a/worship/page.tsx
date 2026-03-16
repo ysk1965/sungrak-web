@@ -75,11 +75,9 @@ export default function VariantAWorshipPage() {
       />
 
       {/* Breadcrumb */}
-      <section aria-label="경로 탐색 영역">
-        <Container>
-          <Breadcrumb items={[{ label: "예배안내" }]} />
-        </Container>
-      </section>
+      <Section background="white" padding="sm">
+        <Breadcrumb items={[{ label: "예배안내" }]} />
+      </Section>
 
       {/* 주일예배 (Sunday Services) */}
       <Section background="white" padding="xl" aria-label="주일예배 안내">
@@ -90,6 +88,13 @@ export default function VariantAWorshipPage() {
           />
         </FadeInUp>
 
+        <div className="flex items-center justify-center gap-2 mb-8">
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-50 text-red-600 text-sm font-medium">
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" aria-hidden="true" />
+            실시간 예배 시청하기
+          </span>
+        </div>
+
         <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {sundayWorships.map((worship) => (
             <StaggerItem key={worship.id}>
@@ -97,7 +102,7 @@ export default function VariantAWorshipPage() {
                 <CardContent className="p-8 text-center relative">
                   {/* Gold top border */}
                   <div
-                    className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-400 to-primary-600"
+                    className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-400 to-primary-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"
                     aria-hidden="true"
                   />
                   <Clock
@@ -142,7 +147,7 @@ export default function VariantAWorshipPage() {
                   <CardContent className="p-0 relative">
                     {/* Gold top border */}
                     <div
-                      className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-400 to-primary-600"
+                      className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-400 to-primary-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"
                       aria-hidden="true"
                     />
                     <div className="flex items-center gap-6 p-6 pt-7">

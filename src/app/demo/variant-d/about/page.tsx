@@ -351,42 +351,119 @@ export default function VariantDAboutPage() {
           </p>
         </motion.div>
 
-        <div className="max-w-2xl mx-auto">
-          {history.map((item, i) => (
-            <motion.div
-              key={item.year}
-              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={
-                shouldReduceMotion ? { duration: 0 } : { delay: i * 0.1 }
-              }
-              className="relative flex items-start gap-6 pb-10 last:pb-0"
-            >
-              {/* Year */}
-              <div className="w-20 flex-shrink-0 text-right pt-0.5">
-                <span className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-amber-500">
-                  {item.year}
-                </span>
-              </div>
+        <div className="relative max-w-4xl mx-auto">
+          {/* Center vertical line (md+) */}
+          <div
+            className="hidden md:block absolute left-1/2 top-0 bottom-0 -translate-x-1/2 w-0.5 bg-gradient-to-b from-primary-300 via-primary-500 to-amber-400"
+            aria-hidden="true"
+          />
 
-              {/* Dot & Line */}
-              <div className="relative flex flex-col items-center">
-                <div className="w-4 h-4 rounded-full bg-primary-500 border-4 border-primary-100 flex-shrink-0 z-10" />
-                {i < history.length - 1 && (
-                  <div
-                    className="absolute top-4 left-1/2 -translate-x-1/2 w-0 border-l-2 border-primary-200 h-full"
-                    aria-hidden="true"
-                  />
-                )}
-              </div>
+          {history.map((item, i) => {
+            const isLeft = i % 2 === 0;
 
-              {/* Content */}
-              <div className="flex-1 pt-0.5">
-                <p className="text-neutral-700 font-medium">{item.content}</p>
-              </div>
-            </motion.div>
-          ))}
+            return (
+              <motion.div
+                key={item.year}
+                initial={{
+                  opacity: 0,
+                  x: shouldReduceMotion
+                    ? 0
+                    : isLeft
+                      ? -30
+                      : 30,
+                  y: shouldReduceMotion ? 0 : 10,
+                }}
+                whileInView={{ opacity: 1, x: 0, y: 0 }}
+                viewport={{ once: true }}
+                transition={
+                  shouldReduceMotion
+                    ? { duration: 0 }
+                    : { delay: i * 0.1, duration: 0.5 }
+                }
+                className="relative pb-10 last:pb-0"
+              >
+                {/* Mobile layout (< md) */}
+                <div className="flex items-start gap-6 md:hidden">
+                  {/* Year */}
+                  <div className="w-20 flex-shrink-0 text-right pt-0.5">
+                    <span className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-amber-500">
+                      {item.year}
+                    </span>
+                  </div>
+
+                  {/* Dot & Line */}
+                  <div className="relative flex flex-col items-center">
+                    <div className="w-4 h-4 rounded-full bg-primary-500 border-4 border-primary-100 flex-shrink-0 z-10" />
+                    {i < history.length - 1 && (
+                      <div
+                        className="absolute top-4 left-1/2 -translate-x-1/2 w-0.5 bg-gradient-to-b from-primary-300 via-primary-500 to-amber-400 h-full"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 pt-0.5">
+                    <p className="text-neutral-700 font-medium">
+                      {item.content}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Desktop layout (md+): alternating left/right */}
+                <div className="hidden md:grid md:grid-cols-[1fr_auto_1fr] md:gap-8 items-start">
+                  {/* Left column */}
+                  {isLeft ? (
+                    <div className="text-right pr-4">
+                      <Card className="inline-block border-0 shadow-md rounded-xl overflow-hidden text-left">
+                        <CardContent className="p-5 relative">
+                          <div
+                            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 to-amber-500"
+                            aria-hidden="true"
+                          />
+                          <span className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-amber-500">
+                            {item.year}
+                          </span>
+                          <p className="text-neutral-700 font-medium mt-1">
+                            {item.content}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  ) : (
+                    <div />
+                  )}
+
+                  {/* Center dot */}
+                  <div className="relative flex flex-col items-center pt-1">
+                    <div className="w-4 h-4 rounded-full bg-primary-500 border-4 border-primary-100 flex-shrink-0 z-10" />
+                  </div>
+
+                  {/* Right column */}
+                  {!isLeft ? (
+                    <div className="text-left pl-4">
+                      <Card className="inline-block border-0 shadow-md rounded-xl overflow-hidden text-left">
+                        <CardContent className="p-5 relative">
+                          <div
+                            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-primary-500"
+                            aria-hidden="true"
+                          />
+                          <span className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-amber-500">
+                            {item.year}
+                          </span>
+                          <p className="text-neutral-700 font-medium mt-1">
+                            {item.content}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  ) : (
+                    <div />
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </Section>
 
