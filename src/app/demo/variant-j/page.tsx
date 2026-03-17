@@ -215,7 +215,7 @@ export default function VariantJPage() {
                   ? { duration: 0 }
                   : { duration: 0.8, delay: 0.4 }
               }
-              className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-[1.1]"
+              className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-[1.3]"
             >
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500">
                 신실한 헌신,
