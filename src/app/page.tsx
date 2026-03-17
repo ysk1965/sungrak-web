@@ -11,12 +11,12 @@ const variants = [
     href: "/demo/variant-c",
     title: "시안 A",
     subtitle: "밸런스형",
-    description: "반반 레이아웃, 탭 전환, 인터랙티브",
+    description:
+      "좌우 분할 히어로와 탭 전환 UI로 정보를 깔끔하게 정리한 밸런스형 디자인. 밝은 배경에 포인트 컬러 그라데이션을 활용하며, 설교 영상·담임목사 인사·교회 소식·오시는 길까지 한 페이지에서 빠르게 탐색할 수 있습니다.",
     icon: Layout,
-    features: ["좌우 분할 히어로", "탭 전환 콘텐츠", "빠른 메뉴"],
+    features: ["좌우 분할 히어로", "탭 전환 콘텐츠", "빠른 정보 바", "실시간 예배 버튼"],
     color: "from-amber-500 to-orange-600",
-    preview:
-      "https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=600",
+    preview: "/images/시안A.png",
     tag: "탭 전환",
   },
   {
@@ -24,12 +24,12 @@ const variants = [
     href: "/demo/variant-g",
     title: "시안 B",
     subtitle: "스냅 스크롤",
-    description: "풀스크린 섹션, 다크 시네마틱, 스냅 스크롤",
+    description:
+      "각 섹션이 화면 전체를 채우는 풀스크린 스냅 스크롤 방식으로, 마치 슬라이드를 넘기듯 탐색합니다. 우측 사이드에 도트 내비게이션이 있어 현재 위치를 한눈에 파악할 수 있고, 자동 전환 히어로 이미지와 시네마틱한 연출이 돋보입니다.",
     icon: PanelTop,
-    features: ["100vh 스냅 섹션", "사이드 도트 내비", "다크 모드"],
+    features: ["100vh 풀스크린 섹션", "사이드 도트 내비", "자동 이미지 슬라이더", "키보드 네비게이션"],
     color: "from-violet-600 to-indigo-800",
-    preview:
-      "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=600",
+    preview: "/images/시안B.png",
     tag: "스냅 스크롤",
   },
   {
@@ -37,12 +37,12 @@ const variants = [
     href: "/demo/variant-i",
     title: "시안 C",
     subtitle: "매거진/에디토리얼",
-    description: "에디토리얼 스토리텔링, 수평 캐러셀, 따뜻한 색감",
+    description:
+      "잡지·신문의 에디토리얼 레이아웃을 웹에 적용한 디자인. 크림색 종이 질감의 배경 위에 세련된 타이포그래피와 패럴렉스 애니메이션, 기울어진 이미지 프레임이 어우러져 격조 있는 분위기를 연출합니다.",
     icon: BookOpen,
-    features: ["에디토리얼 레이아웃", "수평 스크롤", "따뜻한 색감"],
+    features: ["에디토리얼 레이아웃", "패럴렉스 스크롤", "종이 질감 배경", "기울어진 이미지 프레임"],
     color: "from-amber-600 to-rose-500",
-    preview:
-      "https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=600",
+    preview: "/images/시안C.png",
     tag: "매거진",
   },
   {
@@ -50,12 +50,12 @@ const variants = [
     href: "/demo/variant-j",
     title: "시안 D",
     subtitle: "다크 모던",
-    description: "다크 테마, 골드 액센트, 이미지 중심, 소셜 미디어 통합",
+    description:
+      "스톤 그레이 다크 테마에 골드/암버 액센트를 더한 프리미엄 디자인. 필름 그레인 텍스처와 시네마틱 히어로, 3컬럼 이미지 카드, 소셜 미디어 통합까지 현대적이면서도 품격 있는 분위기를 만들어냅니다.",
     icon: Moon,
-    features: ["다크 테마", "3-column 카드", "소셜 미디어"],
+    features: ["다크 프리미엄 테마", "골드 액센트", "3컬럼 이미지 카드", "소셜 미디어 통합"],
     color: "from-stone-700 to-amber-600",
-    preview:
-      "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?q=80&w=600",
+    preview: "/images/시안D.png",
     tag: "다크 모드",
   },
 ];
@@ -117,10 +117,7 @@ export default function Home() {
                       src={variant.preview}
                       alt={variant.title}
                       fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-br ${variant.color} opacity-70 group-hover:opacity-80 transition-opacity`}
+                      className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                     />
 
                     {/* Icon Badge */}
@@ -138,7 +135,7 @@ export default function Home() {
                     </div>
 
                     {/* Title Overlay */}
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-4 pt-12">
                       <h2 className="text-xl font-bold text-white mb-0.5">
                         {variant.title}
                       </h2>
